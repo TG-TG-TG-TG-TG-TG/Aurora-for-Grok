@@ -1,63 +1,161 @@
-{
-  "extensionName": { "message": "Aurora for ChatGPT" },
-  "extensionDescription": { "message": "Ambient blurred background under the ChatGPT UI with a chat visibility toggle and legacy composer option. Not affiliated with OpenAI." },
-  "actionTitle": { "message": "Aurora for ChatGPT — Settings" },
-  "popupTitle": { "message": "Ambient Blur Settings" },
-  "sectionBackground": { "message": "Background" },
-  "labelPreset": { "message": "Preset" },
-  "placeholderBgUrl": { "message": "Paste image or video URL" },
-  "buttonReset": { "message": "Reset" },
-  "labelBlur": { "message": "Blur" },
-  "labelScaling": { "message": "Scaling" },
-  "sectionAppearance": { "message": "Appearance" },
-  "labelTheme": { "message": "Theme" },
-  "labelLegacyComposer": { "message": "Legacy composer" },
-  "tooltipLegacyComposer": { "message": "Use the site's standard composer styling" },
-  "labelDisableAnimations": { "message": "Disable animations" },
-  "tooltipDisableAnimations": { "message": "Disable menu open/close animations" },
-  "sectionInterface": { "message": "Interface" },
-  "labelFocusMode": { "message": "Focus Mode" },
-  "tooltipFocusMode": { "message": "Hides the sidebar and header" },
-  "labelHideQuickSettings": { "message": "Hide Quick Settings" },
-  "tooltipHideQuickSettings": { "message": "Hides the in-page settings icon" },
-  "labelShowInNewChatsOnly": { "message": "Show in new chats only" },
-  "tooltipShowInNewChatsOnly": { "message": "Background is hidden in existing chats" },
-  "sectionVoiceUi": { "message": "Voice UI" },
-  "labelVoiceColor": { "message": "Color" },
-  "labelCuteVoice": { "message": "Cute UI (Cat ears)" },
-  "tooltipCuteVoice": { "message": "Adds cute ears to the voice UI" },
-  "sectionHideElements": { "message": "Hide Elements" },
-  "labelHideGpt5Limit": { "message": "GPT-5 limit message" },
-  "tooltipHideGpt5Limit": { "message": "Hides the GPT-5 limit popup 5 minutes after it appears" },
-  "labelHideUpgradeButtons": { "message": "\"Upgrade plan\" buttons" },
-  "tooltipHideUpgradeButtons": { "message": "Hide the 'Upgrade your plan' buttons" },
-  "labelHideGptsButton": { "message": "'Explore GPTs' button" },
-  "tooltipHideGptsButton": { "message": "Hide the 'Explore GPTs' button in the sidebar" },
-  "labelHideSoraButton": { "message": "'Sora' button" },
-  "tooltipHideSoraButton": { "message": "Hide the 'Sora' button in the sidebar" },
-  "voiceColorOptionDefault": { "message": "Default (Blue)" },
-  "voiceColorOptionOrange": { "message": "Sunset Orange" },
-  "voiceColorOptionYellow": { "message": "Solar Yellow" },
-  "voiceColorOptionPink": { "message": "Sakura Pink" },
-  "voiceColorOptionGreen": { "message": "Aurora Green" },
-  "voiceColorOptionDark": { "message": "Onyx Dark" },
-  "bgPresetOptionDefault": { "message": "GPT-5 Wallpaper" },
-  "bgPresetOptionBlue": { "message": "Blue Wallpaper" },
-  "bgPresetOptionCustom": { "message": "Custom" },
-  "bgScalingOptionContain": { "message": "Contain (fit)" },
-  "bgScalingOptionCover": { "message": "Cover (fill)" },
-  "themeOptionAuto": { "message": "Auto" },
-  "themeOptionLight": { "message": "Light" },
-  "themeOptionDark": { "message": "Dark" },
-  "alertFileTooLarge": { "message": "File is too large! Please choose a file under $1MB." },
-  "statusLocalFileInUse": { "message": "Local file is in use" },
-  "creditPrefix": { "message": "Made by" },
-  "creditSuffix": { "message": "on X" },
-  "quickSettingsButtonTitle": { "message": "Quick Settings" },
-  "quickSettingsSectionVisibility": { "message": "Visibility" },
-  "quickSettingsSectionVoice": { "message": "Voice UI" },
-  "quickSettingsLabelHideUpgradeButtons": { "message": "Hide Upgrade Buttons" },
-  "quickSettingsLabelHideGptsButton": { "message": "Hide 'Explore GPTs'" },
-  "quickSettingsLabelCuteVoice": { "message": "Cute UI (Ears)" },
-  "quickSettingsLabelVoiceColor": { "message": "Voice Color" }
+﻿{
+    "extensionName":  {
+                          "message":  "Aurora for Grok"
+                      },
+    "extensionDescription":  {
+                                 "message":  "Glassmorphism backgrounds, focus tools, and quick toggles tailored for Grok on xAI. Not affiliated with xAI."
+                             },
+    "actionTitle":  {
+                        "message":  "Aurora for Grok — Settings"
+                    },
+    "popupTitle":  {
+                       "message":  "Ambient Canvas Settings"
+                   },
+    "sectionBackground":  {
+                              "message":  "Background"
+                          },
+    "labelPreset":  {
+                        "message":  "Preset"
+                    },
+    "placeholderBgUrl":  {
+                             "message":  "Paste image or video URL"
+                         },
+    "buttonReset":  {
+                        "message":  "Reset"
+                    },
+    "labelBlur":  {
+                      "message":  "Blur"
+                  },
+    "labelScaling":  {
+                         "message":  "Scaling"
+                     },
+    "sectionAppearance":  {
+                              "message":  "Appearance"
+                          },
+    "labelTheme":  {
+                       "message":  "Theme"
+                   },
+    "labelLegacyComposer":  {
+                                "message":  "Standard composer"
+                            },
+    "tooltipLegacyComposer":  {
+                                  "message":  "Use Grok\u0027s native composer styling"
+                              },
+    "labelDisableAnimations":  {
+                                   "message":  "Disable animations"
+                               },
+    "tooltipDisableAnimations":  {
+                                     "message":  "Remove Aurora\u0027s extra motion effects"
+                                 },
+    "sectionInterface":  {
+                             "message":  "Interface"
+                         },
+    "labelFocusMode":  {
+                           "message":  "Focus mode"
+                       },
+    "tooltipFocusMode":  {
+                             "message":  "Hide navigation and header chrome"
+                         },
+    "labelHideQuickSettings":  {
+                                   "message":  "Hide quick settings button"
+                               },
+    "tooltipHideQuickSettings":  {
+                                     "message":  "Remove the floating Aurora control"
+                                 },
+    "labelShowInNewChatsOnly":  {
+                                    "message":  "Show only on the landing view"
+                                },
+    "tooltipShowInNewChatsOnly":  {
+                                      "message":  "Keep backgrounds off inside active threads"
+                                  },
+    "labelHideLeftNav":  {
+                             "message":  "Hide left navigation"
+                         },
+    "tooltipHideLeftNav":  {
+                               "message":  "Collapse Grok\u0027s sidebar links"
+                           },
+    "sectionPromotions":  {
+                              "message":  "Promotions \u0026 notices"
+                          },
+    "labelHideUsageLimit":  {
+                                "message":  "Hide usage limit alerts"
+                            },
+    "tooltipHideUsageLimit":  {
+                                  "message":  "Suppress daily or rate-limit popups"
+                              },
+    "labelHideUpgradePromos":  {
+                                   "message":  "Hide SuperGrok prompts"
+                               },
+    "tooltipHideUpgradePromos":  {
+                                     "message":  "Remove upgrade banners and buttons"
+                                 },
+    "labelHideImaginePromo":  {
+                                  "message":  "Hide Imagine promo carousel"
+                              },
+    "tooltipHideImaginePromo":  {
+                                    "message":  "Remove the image generation teaser card"
+                                },
+    "bgPresetOptionDefault":  {
+                                  "message":  "Grok Horizon"
+                              },
+    "bgPresetOptionBlue":  {
+                               "message":  "Blue Nebula"
+                           },
+    "bgPresetOptionCustom":  {
+                                 "message":  "Custom"
+                             },
+    "bgScalingOptionContain":  {
+                                   "message":  "Contain (fit)"
+                               },
+    "bgScalingOptionCover":  {
+                                 "message":  "Cover (fill)"
+                             },
+    "themeOptionAuto":  {
+                            "message":  "Auto"
+                        },
+    "themeOptionLight":  {
+                             "message":  "Light"
+                         },
+    "themeOptionDark":  {
+                            "message":  "Dark"
+                        },
+    "alertFileTooLarge":  {
+                              "message":  "File is too large! Please choose a file under $1 MB."
+                          },
+    "statusLocalFileInUse":  {
+                                 "message":  "Local file active"
+                             },
+    "creditPrefix":  {
+                         "message":  "Made by"
+                     },
+    "creditSuffix":  {
+                         "message":  "on X"
+                     },
+    "quickSettingsButtonTitle":  {
+                                     "message":  "Quick settings"
+                                 },
+    "quickSettingsSectionVisibility":  {
+                                           "message":  "Visibility"
+                                       },
+    "quickSettingsLabelFocusMode":  {
+                                        "message":  "Focus mode"
+                                    },
+    "quickSettingsLabelHideUpgradePromos":  {
+                                                "message":  "Hide SuperGrok promos"
+                                            },
+    "quickSettingsLabelHideImaginePromo":  {
+                                               "message":  "Hide Imagine promo"
+                                           },
+    "quickSettingsLabelHideUsageLimit":  {
+                                             "message":  "Hide usage limit"
+                                         },
+    "labelLocalFile":  {
+                           "message":  "Local file (optional)"
+                       },
+    "bgPresetOptionChatgpt":  {
+                                  "message":  "ChatGPT Horizon"
+                              },
+    "statusChatgptPreset":  {
+                                "message":  "ChatGPT wallpaper active"
+                            }
 }

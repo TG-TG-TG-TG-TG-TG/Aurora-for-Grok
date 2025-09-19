@@ -1,574 +1,686 @@
-/* Aurora for ChatGPT - Main Stylesheet */
+html.grok-ambient-on,
 
-/* --- Base Transparency --- */
-html.cgpt-ambient-on,
-html.cgpt-ambient-on body {
-  background: transparent !important;
+html.grok-ambient-on body {
+
+  background-color: transparent !important;
+
+  position: relative;
+
 }
 
-/* --- Background Container & Media --- */
-#cgpt-ambient-bg {
+#grok-ambient-bg {
+
   position: fixed;
+
   inset: 0;
+
   z-index: -1;
+
   pointer-events: none;
-  background-color: #000;
+
+  overflow: hidden;
+
 }
 
-#cgpt-ambient-bg picture,
-#cgpt-ambient-bg img,
-#cgpt-ambient-bg video,
-#cgpt-ambient-bg .haze,
-#cgpt-ambient-bg .overlay {
-  position: absolute;
-  inset: 0;
+#grok-ambient-bg picture,
+
+#grok-ambient-bg video,
+
+#grok-ambient-bg .haze,
+
+#grok-ambient-bg .overlay {
+  background: linear-gradient(180deg, rgba(8, 12, 22, 0.42), rgba(8, 12, 22, 0.6));
+}
+
+#grok-ambient-bg picture { display: block; }
+
+#grok-ambient-bg img,
+#grok-ambient-bg video {
   width: 100%;
   height: 100%;
-}
-
-#cgpt-ambient-bg img,
-#cgpt-ambient-bg video {
-  /* object-fit is controlled dynamically by content.js */
-  filter: blur(var(--cgpt-bg-blur-radius, 60px)) brightness(0.55);
-  opacity: 0.58;
-  will-change: transform, filter;
-  z-index: 0;
-}
-
-/* --- Background Effects --- */
-#cgpt-ambient-bg .haze {
-  pointer-events: none;
-  z-index: 2;
-  background: linear-gradient( to bottom, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.10) 22%, rgba(255,255,255,0.06) 45%, rgba(255,255,255,0.02) 68%, rgba(255,255,255,0.00) 85% );
-}
-
-html.cgpt-ambient-on #cgpt-ambient-bg .overlay {
-  pointer-events: none !important;
-  z-index: 1;
-  background: linear-gradient( to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.75) 18%, rgba(0, 0, 0, 0.50) 36%, rgba(0, 0, 0, 0.24) 60%, rgba(0, 0, 0, 0.00) 80% ) !important;
-}
-
-/* --- Animations for Menus --- */
-@keyframes aurora-menu-open {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-@keyframes aurora-menu-close {
-  from { opacity: 1; transform: scale(1); }
-  to { opacity: 0; transform: scale(0.95); }
-}
-
-/* 
-  --- REFACTORED: Unified Composer Glass Effect --- 
-  This single, more accurate selector replaces the two older, redundant ones.
-  It targets the main container of the ChatGPT textbox.
-*/
-html.cgpt-ambient-on:not(.cgpt-legacy-composer) form[data-type="unified-composer"] > div > div {
-  background: rgba(0,0,0,0.35) !important;
-  border: 1px solid rgba(255,255,255,0.14) !important;
-  box-shadow: 0 8px 30px rgba(0,0,0,.40) !important;
-  -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
-  backdrop-filter: blur(14px) saturate(140%) !important;
-  transition: background 0.3s ease, border-color 0.3s ease;
-}
-
-/* 
-  --- REFACTORED: Simplified Composer Text Area ---
-  Removed the old, obsolete selector for the legacy composer's label.
-  This now correctly targets the modern ProseMirror editor and its textarea fallback.
-*/
-html.cgpt-ambient-on:not(.cgpt-legacy-composer)
-  form[data-type="unified-composer"] :is(.ProseMirror, textarea) {
-  background: transparent !important;
-}
-
-
-/* User message bubble: Glass effect */
-html.cgpt-ambient-on:not(.cgpt-legacy-composer) div[data-message-author-role="user"] .user-message-bubble-color {
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(160%) !important;
-  backdrop-filter: blur(12px) saturate(160%) !important;
-}
-
-/* --- General Transparency Overrides --- */
-html.cgpt-ambient-on :is(main, #__next, .bg-token-bg-primary.sticky, header#page-header, .sticky.top-0.bg-token-main-surface-primary, div.sticky.top-14[class*="bg-token-bg-primary"]) {
-  background-color: transparent !important;
-  box-shadow: none !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-}
-
-html.cgpt-ambient-on :is(header#page-header, .sticky.top-0.bg-token-main-surface-primary, div.sticky.top-14[class*="bg-token-bg-primary"])::before,
-html.cgpt-ambient-on :is(header#page-header, .sticky.top-0.bg-token-main-surface-primary, div.sticky.top-14[class*="bg-token-bg-primary"])::after {
-  content: none !important;
-}
-
-html.cgpt-ambient-on #thread-bottom-container,
-html.cgpt-ambient-on #thread-bottom-container .text-token-text-secondary {
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-html.cgpt-ambient-on #thread-bottom-container.content-fade,
-html.cgpt-ambient-on #thread-bottom-container .content-fade {
-  -webkit-mask-image: none !important;
-  mask-image: none !important;
-}
-
-html.cgpt-ambient-on #thread-bottom-container::before,
-html.cgpt-ambient-on #thread-bottom-container::after,
-html.cgpt-ambient-on #thread-bottom-container .content-fade::before,
-html.cgpt-ambient-on #thread-bottom-container .content-fade::after {
-  content: none !important;
-}
-
-
-/* --- Menu & Popup Glass Effects --- */
-html.cgpt-ambient-on:not(.cgpt-legacy-composer)
-  :is(
-    .popover.bg-token-main-surface-primary[data-radix-menu-content],
-    .popover.bg-token-main-surface-primary[role="dialog"],
-    div[role="dialog"][class*="shadow-long"],
-    .popover.bg-token-main-surface-primary.max-w-xs,
-    div.sticky.top-14.bg-token-main-surface-primary,
-    input#search[placeholder="Search GPTs"],
-    textarea.bg-token-main-surface-primary.border-token-border-default
-  ) {
-  background: rgba(255, 255, 255, 0.10) !important;
-  border: 1px solid rgba(255, 255, 255, 0.28) !important;
-  -webkit-backdrop-filter: blur(22px) saturate(140%) !important;
-  backdrop-filter: blur(22px) saturate(140%) !important;
-  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.45) !important;
-}
-
-/* Glass effect for thread title/header elements */
-html.cgpt-ambient-on:not(.cgpt-legacy-composer) .bg-token-main-surface-primary.sticky.top-\[-1px\].z-1.px-\(--thread-content-margin\).text-center.text-lg.text-pretty.md\:static {
-  background: rgba(0, 0, 0, 0.35) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  -webkit-backdrop-filter: blur(22px) saturate(140%) !important;
-  backdrop-filter: blur(22px) saturate(140%) !important;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.40) !important;
-}
-
-html.cgpt-ambient-on:not(.cgpt-legacy-composer):not(.cgpt-animations-disabled)
-  :is(
-    .popover.bg-token-main-surface-primary[data-radix-menu-content][data-state="open"],
-    .popover[role="dialog"][class*="md:max-w-"][data-state="open"]
-  ) {
-  animation: aurora-menu-open 300ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-html.cgpt-ambient-on:not(.cgpt-legacy-composer):not(.cgpt-animations-disabled)
-  :is(
-    .popover.bg-token-main-surface-primary[data-radix-menu-content][data-state="closed"],
-    .popover[role="dialog"][class*="md:max-w-"][data-state="closed"]
-  ) {
-  animation: aurora-menu-close 300ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@media (prefers-color-scheme: dark) {
-  html.cgpt-ambient-on:not(.cgpt-light-mode):not(.cgpt-legacy-composer)
-    :is(
-      .popover.bg-token-main-surface-primary[data-radix-menu-content],
-      .popover.bg-token-main-surface-primary[role="dialog"],
-      div[role="dialog"][class*="shadow-long"],
-      .popover.bg-token-main-surface-primary.max-w-xs,
-      div.sticky.top-14.bg-token-main-surface-primary,
-      input#search[placeholder="Search GPTs"],
-      textarea.bg-token-main-surface-primary.border-token-border-default
-    ) {
-    background: rgba(0, 0, 0, 0.35) !important;
-    border-color: rgba(255, 255, 255, 0.14) !important;
-  }
-}
-
-html.cgpt-ambient-on:not(.cgpt-legacy-composer)
-  .popover[role="dialog"]
-  .md\:flex-row.flex-col,
-html.cgpt-ambient-on:not(.cgpt-legacy-composer)
-  div[role="dialog"][class*="shadow-long"] .bg-token-bg-elevated-secondary {
-  background-color: transparent !important;
-}
-
-html.cgpt-ambient-on:not(.cgpt-legacy-composer)
-  :is(.popover[data-radix-menu-content], .popover[role="dialog"]) [role="group"]::before {
-  background: color-mix(in oklab, currentColor 24%, transparent) !important;
-}
-
-html.cgpt-ambient-on:not(.cgpt-legacy-composer)
-  :is(.popover[data-radix-menu-content], .popover[role="dialog"]) .__menu-item:hover {
-  background: color-mix(in oklab, currentColor 12%, transparent) !important;
-}
-
-
-.cgpt-hide-gpt5-limit,
-.cgpt-hide-upgrade,
-.cgpt-hide-sora,
-.cgpt-hide-gpts {
-  display: none !important;
-}
-
-/* --- Misc Glass UI elements --- */
-html.cgpt-ambient-on:not(.cgpt-legacy-composer) .dark\\:bg-\\[\\#373669\\].flex {
-  background: rgba(55, 54, 105, 0.6) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(140%) !important;
-  backdrop-filter: blur(12px) saturate(140%) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-}
-
-html.cgpt-ambient-on:not(.cgpt-legacy-composer) .dark\\:hover\\:bg-\\[\\#414071\\]:hover {
-    background: rgba(65, 64, 113, 0.75) !important;
-}
-
-html.cgpt-ambient-on:not(.cgpt-legacy-composer) div[role="alert"].bg-red-500 {
-  background: rgba(239, 68, 68, 0.5) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(140%) !important;
-  backdrop-filter: blur(12px) saturate(140%) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-}
-
-html.cgpt-ambient-on:not(.cgpt-legacy-composer) .flex-col.w-full.h-full.flex.z-50.top-0.start-0.fixed.bg-token-main-surface-primary {
-  background: rgba(18, 18, 18, 0.5) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
-  backdrop-filter: blur(16px) saturate(140%) !important;
-}
-
-
-/* --- Light Mode Overrides --- */
-html.cgpt-ambient-on.cgpt-light-mode #cgpt-ambient-bg {
-  background-color: #fff;
-}
-
-html.cgpt-ambient-on.cgpt-light-mode #cgpt-ambient-bg img,
-html.cgpt-ambient-on.cgpt-light-mode #cgpt-ambient-bg video {
-  filter: blur(var(--cgpt-bg-blur-radius, 60px)) brightness(0.99) contrast(1);
-  opacity: 0.72;
-}
-
-html.cgpt-ambient-on.cgpt-light-mode #cgpt-ambient-bg .haze {
-  background: linear-gradient( to bottom, rgba(0,0,0,0.153) 0%, rgba(0,0,0,0.09) 22%, rgba(0,0,0,0.045) 45%, rgba(0,0,0,0.0225) 68%, rgba(0,0,0,0.00) 85% );
-}
-
-html.cgpt-ambient-on.cgpt-light-mode #cgpt-ambient-bg .overlay {
-  background: linear-gradient( to top, rgba(255,255,255,0.693) 0%, rgba(255,255,255,0.539) 18%, rgba(255,255,255,0.346) 36%, rgba(255,255,255,0.154) 60%, rgba(255,255,255,0.00) 80% ) !important;
-}
-
-html.cgpt-ambient-on.cgpt-light-mode:not(.cgpt-legacy-composer) form[data-type="unified-composer"] > div > div {
-  background: rgba(255,255,255,0.2) !important;
-  border: 1px solid rgba(0,0,0,0.09) !important;
-  box-shadow: 0 6px 26px rgba(0,0,0,0.20) !important;
-}
-
-html.cgpt-ambient-on.cgpt-light-mode:not(.cgpt-legacy-composer)
-  :is(
-    .popover.bg-token-main-surface-primary[data-radix-menu-content],
-    .popover.bg-token-main-surface-primary[role="dialog"],
-    div[role="dialog"][class*="shadow-long"]
-  ) {
-  background: rgba(255,255,255,0.242) !important;
-  border-color: rgba(0,0,0,0.072) !important;
-}
-
-html.cgpt-ambient-on.cgpt-light-mode:not(.cgpt-legacy-composer) .bg-token-main-surface-primary.sticky.top-\[-1px\].z-1.px-\(--thread-content-margin\).text-center.text-lg.text-pretty.md\:static {
-  background: rgba(255, 255, 255, 0.2) !important;
-  border: 1px solid rgba(0, 0, 0, 0.09) !important;
-  box-shadow: 0 6px 26px rgba(0, 0, 0, 0.20) !important;
-}
-
-html.cgpt-ambient-on.cgpt-light-mode:not(.cgpt-legacy-composer) .flex-col.w-full.h-full.flex.z-50.top-0.start-0.fixed.bg-token-main-surface-primary {
-  background: rgba(255, 255, 255, 0.5) !important;
-}
-
-html.cgpt-ambient-on.cgpt-light-mode:not(.cgpt-legacy-composer) div[data-message-author-role="user"] .user-message-bubble-color {
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
-}
-
-html.cgpt-ambient-on.cgpt-light-mode body,
-html.cgpt-ambient-on.cgpt-light-mode [class*="text-token-text-"],
-html.cgpt-ambient-on.cgpt-light-mode [class*="text-gray-"] {
-  color: #000000 !important;
-}
-
-html.cgpt-ambient-on.cgpt-light-mode svg {
-  color: #000000 !important;
-}
-
-html.cgpt-ambient-on.cgpt-light-mode ::placeholder {
-  color: #000000 !important;
-  opacity: 0.7;
-}
-
-/* --- Fix for round UI elements in light mode --- */
-html.cgpt-ambient-on.cgpt-light-mode button {
-  background: transparent !important;
-  border-color: rgba(0, 0, 0, 0.1) !important;
-  color: #000000 !important;
-}
-
-html.cgpt-ambient-on.cgpt-light-mode .bg-token-main-surface-primary {
-  background: rgba(255, 255, 255, 0.3) !important;
-  border-color: rgba(0, 0, 0, 0.1) !important;
-}
-
-html.cgpt-ambient-on.cgpt-light-mode .bg-black {
-  background-color: rgba(255, 255, 255, 0.3) !important;
-}
-
-html.cgpt-ambient-on.cgpt-light-mode .composer-submit-btn {
-  background: rgba(255, 255, 255, 0.3) !important;
-}
-
-/* --- Voice UI & Cat Ears --- */
-html.cgpt-ambient-on[data-voice-color]:not([data-voice-color="default"]) .min-h-bloop > canvas {
-  filter: var(--voice-filter) !important;
-}
-
-html.cgpt-ambient-on[data-voice-color="orange"] { --voice-filter: hue-rotate(180deg) saturate(1.5); }
-html.cgpt-ambient-on[data-voice-color="yellow"] { --voice-filter: hue-rotate(180deg) saturate(2.5) brightness(1.1); }
-html.cgpt-ambient-on[data-voice-color="pink"] { --voice-filter: hue-rotate(80deg) saturate(1.8) brightness(1.1); }
-html.cgpt-ambient-on[data-voice-color="green"] { --voice-filter: hue-rotate(-120deg) saturate(1.2) brightness(0.9); }
-html.cgpt-ambient-on[data-voice-color="dark"] { --voice-filter: grayscale(1) brightness(0.4) contrast(1.5); }
-
-html.cgpt-cute-voice-on .min-h-bloop { position: relative; }
-html.cgpt-cute-voice-on .min-h-bloop::before,
-html.cgpt-cute-voice-on .min-h-bloop::after {
-  content: "";
-  position: absolute;
-  width: 48px;
-  height: 65px;
-  background: #8EBBFF;
-  filter: var(--voice-filter);
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-  top: -15px;
-  z-index: 0;
-}
-html.cgpt-cute-voice-on .min-h-bloop::before { left: 45px; transform: rotate(-35deg); }
-html.cgpt-cute-voice-on .min-h-bloop::after { right: 45px; transform: rotate(35deg); }
-html.cgpt-cute-voice-on .min-h-bloop > canvas { position: relative; z-index: 1; }
-
-/* --- Quick Settings UI --- */
-/* (This section was already well-structured, so it remains unchanged) */
-#cgpt-qs-btn {
-  position: fixed;
-  bottom: 12px;
-  right: 16px;
-  z-index: 99998;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: rgba(30, 30, 30, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s ease, transform 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-#cgpt-qs-btn:hover { transform: scale(1.08); }
-#cgpt-qs-btn svg { width: 20px; height: 20px; color: white; opacity: 0.9; }
-html.cgpt-light-mode #cgpt-qs-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(0,0,0,0.1);
-}
-html.cgpt-light-mode #cgpt-qs-btn svg { color: #000; }
-
-#cgpt-qs-panel {
-  position: fixed;
-  bottom: 60px;
-  right: 16px;
-  z-index: 99997;
-  width: 260px;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  -webkit-backdrop-filter: blur(22px) saturate(140%);
-  backdrop-filter: blur(22px) saturate(140%);
-  border-radius: 14px;
-  box-shadow: 0 16px 50px rgba(0,0,0,0.45);
-  padding: 8px;
-  opacity: 0;
-  transform: translateY(10px) scale(0.95);
-  pointer-events: none;
-  transition: opacity 200ms ease, transform 200ms ease;
-  color: #fff;
-}
-#cgpt-qs-panel.active {
+  object-fit: var(--grok-bg-scaling, cover);
+  filter: blur(var(--grok-bg-blur-radius, 60px)) brightness(0.64);
+  transform: scale(1.05);
+  transition: opacity 320ms ease;
   opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
 }
-html.cgpt-light-mode #cgpt-qs-panel {
-    background: rgba(255, 255, 255, 0.242);
-    border-color: rgba(0,0,0,0.072);
-    color: #000;
+
+#grok-ambient-bg video { display: none; }
+
+#grok-ambient-bg .haze {
+  background: radial-gradient(circle at 50% 20%, rgba(114, 138, 255, 0.22), transparent 62%);
+  mix-blend-mode: screen;
+}
+
+#grok-ambient-bg .overlay {
+
+  background: linear-gradient(180deg, rgba(8, 12, 22, 0.65), rgba(8, 12, 22, 0.8));
+
+}
+
+html.grok-light-mode #grok-ambient-bg img,
+
+html.grok-light-mode #grok-ambient-bg video {
+
+  filter: blur(var(--grok-bg-blur-radius, 60px)) brightness(0.92);
+
+}
+
+html.grok-light-mode #grok-ambient-bg .overlay {
+  background: linear-gradient(180deg, rgba(245, 247, 252, 0.62), rgba(245, 247, 252, 0.82));
+}
+
+html.grok-chatgpt-bg #grok-ambient-bg img,
+html.grok-chatgpt-bg #grok-ambient-bg video {
+  filter: blur(var(--grok-bg-blur-radius, 60px)) brightness(0.78) saturate(1.06);
+}
+
+html.grok-chatgpt-bg #grok-ambient-bg .haze {
+  background: radial-gradient(circle at 50% 34%, rgba(134, 162, 255, 0.12), transparent 72%);
+}
+
+html.grok-chatgpt-bg #grok-ambient-bg .overlay {
+  background: linear-gradient(180deg, rgba(16, 20, 34, 0.24), rgba(12, 16, 26, 0.38));
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  backdrop-filter: blur(24px) saturate(150%);
+}
+
+html.grok-chatgpt-bg.grok-light-mode #grok-ambient-bg img,
+html.grok-chatgpt-bg.grok-light-mode #grok-ambient-bg video {
+  filter: blur(var(--grok-bg-blur-radius, 60px)) brightness(0.92) saturate(1.04);
+}
+
+html.grok-chatgpt-bg.grok-light-mode #grok-ambient-bg .overlay {
+  background: linear-gradient(180deg, rgba(248, 249, 255, 0.6), rgba(250, 252, 255, 0.8));
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(20px) saturate(140%);
+}
+
+html.grok-animations-disabled * {
+
+  animation-duration: 0ms !important;
+
+  transition-duration: 0ms !important;
+
+}
+
+html.grok-focus-mode-on nav,
+
+html.grok-focus-mode-on aside,
+
+html.grok-hide-left-nav nav,
+
+html.grok-hide-left-nav aside,
+
+html.grok-hide-left-nav [data-testid*="sidebar"],
+
+html.grok-focus-mode-on [data-testid*="sidebar"] {
+
+  display: none !important;
+
+}
+
+html.grok-focus-mode-on header,
+
+html.grok-focus-mode-on [role="banner"],
+
+html.grok-focus-mode-on [data-testid*="topbar"] {
+
+  opacity: 0 !important;
+
+  pointer-events: none !important;
+
+  transform: translateY(-14px);
+
+  transition: opacity 200ms ease, transform 200ms ease;
+
+}
+
+html.grok-focus-mode-on main,
+
+html.grok-focus-mode-on #root > main,
+
+html.grok-focus-mode-on [data-testid*="content"] {
+
+  margin-left: auto !important;
+
+  margin-right: auto !important;
+
+  max-width: 960px;
+
+  width: 100%;
+
+}
+
+html.grok-focus-mode-on body {
+
+  overflow-y: auto;
+
+}
+
+.grok-hide-usage-notice,
+
+.grok-hide-upgrade-promo,
+
+.grok-hide-imagine-promo {
+
+  display: none !important;
+
+}
+
+/* Quick Settings */
+
+#grok-qs-btn {
+
+  position: fixed;
+
+  bottom: 16px;
+
+  right: 18px;
+
+  z-index: 99998;
+
+  width: 40px;
+
+  height: 40px;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  background: rgba(22, 26, 38, 0.55);
+
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+
+  backdrop-filter: blur(16px) saturate(140%);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: transform 180ms ease, background 180ms ease;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+
+}
+
+#grok-qs-btn:hover { transform: scale(1.08); }
+
+#grok-qs-btn svg { width: 22px; height: 22px; color: #f5f6ff; }
+
+html.grok-light-mode #grok-qs-btn {
+
+  background: rgba(250, 250, 255, 0.65);
+
+  border-color: rgba(15, 20, 35, 0.18);
+
+}
+
+html.grok-light-mode #grok-qs-btn svg { color: #13172a; }
+
+#grok-qs-panel {
+
+  position: fixed;
+
+  bottom: 68px;
+
+  right: 18px;
+
+  z-index: 99997;
+
+  width: 268px;
+
+  border-radius: 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+
+  background: rgba(12, 16, 26, 0.72);
+
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+
+  backdrop-filter: blur(28px) saturate(160%);
+
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
+
+  padding: 10px 10px 12px;
+
+  opacity: 0;
+
+  transform: translateY(12px) scale(0.94);
+
+  pointer-events: none;
+
+  transition: opacity 200ms ease, transform 200ms ease;
+
+  color: #f5f7ff;
+
+}
+
+#grok-qs-panel.active {
+
+  opacity: 1;
+
+  transform: translateY(0) scale(1);
+
+  pointer-events: auto;
+
+}
+
+html.grok-light-mode #grok-qs-panel {
+
+  background: rgba(245, 247, 255, 0.78);
+
+  border-color: rgba(15, 20, 35, 0.1);
+
+  color: #111428;
+
 }
 
 .qs-section-title {
+
   font-size: 11px;
+
   font-weight: 600;
+
+  letter-spacing: 0.06em;
+
   text-transform: uppercase;
+
   opacity: 0.6;
-  padding: 8px 8px 4px;
-}
-.qs-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+
   padding: 6px 8px;
-  border-radius: 6px;
-  transition: background 0.2s ease;
-}
-.qs-row:hover { background: rgba(255, 255, 255, 0.08); }
-html.cgpt-light-mode .qs-row:hover { background: rgba(0,0,0,0.06); }
-.qs-row > label { font-size: 14px; opacity: 0.95; }
 
-.qs-row .switch { position: relative; width: 46px; height: 26px; flex: 0 0 auto; }
-.qs-row .switch input { display: none; }
-.qs-row .track { position: absolute; inset: 0; border-radius: 999px; background: rgba(0,0,0,0.3); transition: background .2s ease; }
-html.cgpt-light-mode .qs-row .track { background: rgba(0,0,0,0.1); }
-.qs-row input:checked + .track { background: #4f8cff; }
-.qs-row .thumb { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: white; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .2s ease; }
-.qs-row input:checked + .track .thumb { transform: translateX(20px); }
-
-.qs-custom-select {
-  position: relative;
-  max-width: 110px;
-  width: 100%;
 }
-.qs-select-trigger {
+
+.qs-row {
+
   display: flex;
+
   align-items: center;
-  width: 100%;
-  padding: 4px 10px;
+
+  justify-content: space-between;
+
+  padding: 8px 8px;
+
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background-color: rgba(255, 255, 255, 0.05);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  color: inherit;
-  font-size: 13px;
-  text-align: left;
-  cursor: pointer;
-  gap: 8px;
-  transition: background-color 0.2s ease;
+
+  transition: background-color 180ms ease;
+
 }
-html.cgpt-light-mode .qs-select-trigger {
-  border-color: rgba(0, 0, 0, 0.08);
-  background-color: rgba(0, 0, 0, 0.03);
-}
-.qs-select-trigger:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-html.cgpt-light-mode .qs-select-trigger:hover {
-  background-color: rgba(0, 0, 0, 0.08);
-}
-.qs-select-trigger > .qs-select-label {
-  flex-grow: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.qs-select-trigger svg {
-  flex-shrink: 0;
-  margin-left: auto;
-  width: 16px;
-  height: 16px;
-  stroke: currentColor;
-  opacity: 0.7;
-  transition: transform 0.2s ease;
-}
-.qs-select-trigger[aria-expanded="true"] svg {
-  transform: rotate(180deg);
-}
-.qs-color-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  border: 1px solid rgba(0,0,0,0.1);
-}
-html:not(.cgpt-light-mode) .qs-color-dot {
-  border-color: rgba(255,255,255,0.1);
-}
-.qs-select-options {
-  position: absolute;
-  bottom: calc(100% + 6px);
-  right: 0;
-  left: 0;
-  z-index: 99999;
-  list-style: none;
-  padding: 6px;
-  margin: 0;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  -webkit-backdrop-filter: blur(22px) saturate(140%);
-  backdrop-filter: blur(22px) saturate(140%);
-  border-radius: 10px;
-  box-shadow: 0 16px 50px rgba(0,0,0,0.45);
-  max-height: 200px;
-  overflow-y: auto;
-}
-.qs-select-options::-webkit-scrollbar {
-  display: none;
-}
-html.cgpt-light-mode .qs-select-options {
-  background: rgba(255, 255, 255, 0.242);
-  border-color: rgba(0,0,0,0.072);
-}
-.qs-select-option {
-  display: flex;
-  align-items: center;
-  padding: 8px 10px;
+
+.qs-row:hover { background: rgba(255, 255, 255, 0.08); }
+
+html.grok-light-mode .qs-row:hover { background: rgba(14, 18, 30, 0.08); }
+
+.qs-label {
+
   font-size: 14px;
-  border-radius: 6px;
+
+  flex: 1;
+
   cursor: pointer;
-  gap: 8px;
-  transition: background-color 0.2s ease;
-}
-.qs-select-option:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-}
-html.cgpt-light-mode .qs-select-option:hover {
-  background-color: rgba(0, 0, 0, 0.06);
-}
-.qs-select-option[aria-selected="true"] {
-  font-weight: 500;
-}
-.qs-select-option .qs-checkmark {
-  margin-left: auto;
-  width: 16px;
-  height: 16px;
-  stroke: currentColor;
-  opacity: 0;
-}
-.qs-select-option[aria-selected="true"] .qs-checkmark {
-  opacity: 1;
+
 }
 
-/* Focus Mode Rules */
-html.cgpt-focus-mode-on .flex-shrink-0[class*="bg-token-sidebar-surface-primary"],
-html.cgpt-focus-mode-on header#page-header,
-html.cgpt-focus-mode-on main .gizmo-suggestions,
-html.cgpt-focus-mode-on main .text-4xl.font-semibold {
-    display: none !important;
-}
-html.cgpt-focus-mode-on #thread-bottom-container {
-    visibility: hidden !important;
-}
-html.cgpt-focus-mode-on main .flex.h-full.flex-col {
-    padding-top: 1.25rem;
+#grok-qs-panel .switch {
+
+  position: relative;
+
+  width: 48px;
+
+  height: 26px;
+
+  flex: 0 0 auto;
+
 }
 
-/* Composer Animation */
-form[data-type="unified-composer"] > div:is(.bg-token-bg-primary, [class*="dark:bg"]) {
-  transition: background 0.3s ease-in-out, 
-              border-color 0.3s ease-in-out, 
-              box-shadow 0.3s ease-in-out, 
-              backdrop-filter 0.3s ease-in-out, 
-              -webkit-backdrop-filter 0.3s ease-in-out;
+#grok-qs-panel .switch input { display: none; }
+
+#grok-qs-panel .track {
+
+  position: absolute;
+
+  inset: 0;
+
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.18);
+
+  transition: background 180ms ease;
+
 }
+
+html.grok-light-mode #grok-qs-panel .track {
+
+  background: rgba(25, 30, 45, 0.18);
+
+}
+
+#grok-qs-panel input:checked + .track {
+
+  background: linear-gradient(120deg, #5f8dff, #9a6bff);
+
+}
+
+#grok-qs-panel .thumb {
+
+  position: absolute;
+
+  top: 3px;
+
+  left: 3px;
+
+  width: 20px;
+
+  height: 20px;
+
+  border-radius: 999px;
+
+  background: #ffffff;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+
+  transition: transform 180ms ease;
+
+}
+
+#grok-qs-panel input:checked + .track .thumb {
+
+  transform: translateX(22px);
+
+}
+
+@media (max-width: 640px) {
+
+  #grok-qs-btn { bottom: 14px; right: 14px; }
+
+  #grok-qs-panel { bottom: 64px; right: 14px; width: calc(100vw - 28px); }
+
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) .query-bar {
+  position: relative;
+  background: linear-gradient(135deg, rgba(36, 46, 72, 0.28), rgba(16, 26, 44, 0.2)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(160%);
+  box-shadow: 0 12px 30px rgba(12, 20, 36, 0.18);
+  padding: 18px 26px !important;
+  transition: box-shadow 160ms ease, border-color 160ms ease, background-color 160ms ease;
+}
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar {
+
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(242, 245, 255, 0.76)) !important;
+
+  border-color: rgba(16, 24, 44, 0.18) !important;
+
+  box-shadow: 0 18px 34px rgba(52, 62, 92, 0.18);
+
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) .query-bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+  opacity: 0.98;
+  z-index: -1;
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) .query-bar textarea,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .query-bar span,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .query-bar button {
+
+  color: rgba(244, 247, 255, 0.9) !important;
+
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) .query-bar .border-border-l2,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .query-bar .ring-border-l1,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .query-bar .ring-border-l2 {
+
+  border-color: rgba(255, 255, 255, 0.16) !important;
+
+}
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar .border-border-l2,
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar .ring-border-l1,
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar .ring-border-l2 {
+
+  border-color: rgba(15, 20, 35, 0.18) !important;
+
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) .query-bar textarea::placeholder {
+
+  color: rgba(244, 247, 255, 0.78);
+
+}
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar textarea::placeholder {
+
+  color: rgba(16, 24, 44, 0.62);
+
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) .query-bar > * {
+
+  position: relative;
+
+  z-index: 1;
+
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) .query-bar:focus-within {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 14px 30px rgba(14, 24, 40, 0.18);
+}
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar:focus-within {
+  border-color: rgba(16, 24, 44, 0.22) !important;
+  box-shadow: 0 14px 30px rgba(84, 96, 128, 0.18);
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) .query-bar textarea {
+
+  min-height: 42px;
+
+  padding-top: 6px !important;
+
+  padding-bottom: 8px !important;
+
+  background: transparent !important;
+
+  border: none !important;
+
+  box-shadow: none !important;
+
+  resize: none;
+
+  line-height: 1.5;
+
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) .query-bar textarea:focus-visible,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .query-bar button:focus-visible {
+
+  outline: none !important;
+
+  box-shadow: none !important;
+
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) button[data-sidebar="menu-button"] {
+  background: rgba(18, 26, 44, 0.34) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  backdrop-filter: blur(24px) saturate(150%);
+  box-shadow: 0 8px 22px rgba(12, 20, 36, 0.18);
+  color: rgba(244, 247, 255, 0.9) !important;
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+
+html.grok-ambient-on:not(.grok-legacy-composer) button[data-sidebar="menu-button"] span {
+
+  color: inherit !important;
+
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) button[data-sidebar="menu-button"]:hover {
+  background: rgba(22, 30, 50, 0.42) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 10px 26px rgba(14, 24, 42, 0.22);
+}
+
+
+html.grok-ambient-on:not(.grok-legacy-composer) button[data-sidebar="menu-button"]:focus-visible {
+  outline: none !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  box-shadow: 0 12px 28px rgba(16, 26, 46, 0.24);
+}
+
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) button[data-sidebar="menu-button"] {
+  background: rgba(255, 255, 255, 0.74) !important;
+  border-color: rgba(18, 26, 46, 0.16) !important;
+  box-shadow: 0 8px 22px rgba(70, 86, 120, 0.18);
+  color: rgba(18, 26, 46, 0.88) !important;
+}
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) button[data-sidebar="menu-button"]:hover {
+  background: rgba(255, 255, 255, 0.82) !important;
+  border-color: rgba(18, 26, 46, 0.2) !important;
+  box-shadow: 0 10px 26px rgba(70, 86, 120, 0.2);
+}
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) button[data-sidebar="menu-button"]:focus-visible {
+  outline: none !important;
+  border-color: rgba(18, 26, 46, 0.24) !important;
+  box-shadow: 0 12px 28px rgba(74, 88, 124, 0.22);
+}
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar span,
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar textarea,
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar button {
+
+  color: rgba(16, 24, 44, 0.85) !important;
+
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-base,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-l1,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-l2,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-raise,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-dialog {
+
+  background-color: rgba(12, 16, 26, 0.07) !important;
+
+  border-color: rgba(255, 255, 255, 0.12) !important;
+
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+
+  backdrop-filter: blur(28px) saturate(160%);
+
+  box-shadow: 0 12px 28px rgba(4, 8, 18, 0.14);
+
+}
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-base,
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-l1,
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-l2,
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-raise,
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .bg-dialog {
+
+  background-color: rgba(247, 249, 255, 0.16) !important;
+
+  border-color: rgba(15, 20, 35, 0.14) !important;
+
+  box-shadow: 0 16px 32px rgba(28, 32, 52, 0.12);
+
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-base::before,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-l1::before,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-l2::before,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-raise::before,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-dialog::before {
+
+  content: '';
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  border-radius: inherit;
+
+  background: linear-gradient(150deg, rgba(110, 138, 255, 0.03), rgba(20, 28, 56, 0.008));
+
+  z-index: 0;
+
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-base > *,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-l1 > *,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-l2 > *,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-raise > *,
+
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-dialog > * {
+
+  position: relative;
+
+  z-index: 1;
+
+}
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar span,
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar textarea,
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar button {
+
+  color: rgba(16, 24, 44, 0.85) !important;
+
+}
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar textarea,
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar button {
+
+  color: rgba(16, 24, 44, 0.85) !important;
+
+}
+

@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html>
 <head>
   <meta charset="utf-8" />
@@ -8,31 +8,27 @@
     :root {
       color-scheme: light dark;
       --background-light: #f0f4f8;
-      --background-dark: #1a1a1f;
-      --text-light: #1d1d1f;
+      --background-dark: #11121b;
+      --text-light: #1d1d22;
       --text-dark: #f0f4f8;
-      --card-background-light: rgba(255, 255, 255, 0.7);
-      --card-background-dark: rgba(42, 42, 46, 0.7);
+      --card-background-light: rgba(255, 255, 255, 0.75);
+      --card-background-dark: rgba(27, 28, 36, 0.82);
       --border-light: rgba(0, 0, 0, 0.1);
-      --border-dark: rgba(255, 255, 255, 0.2);
-      --input-background-light: rgba(0, 0, 0, 0.05);
-      --input-background-dark: rgba(255, 255, 255, 0.1);
-      --primary-accent: #4f8cff;
-      --hover-background-light: rgba(0, 0, 0, 0.1);
-      --hover-background-dark: rgba(255, 255, 255, 0.15);
+      --border-dark: rgba(255, 255, 255, 0.18);
+      --primary-accent: #6c7bff;
     }
     html {
       background-color: var(--background-light);
-      background-image: radial-gradient(at top center, rgba(79, 140, 255, 0.2), transparent 70%);
-      backdrop-filter: blur(16px) saturate(150%);
-      -webkit-backdrop-filter: blur(16px) saturate(150%);
+      background-image: radial-gradient(at top center, rgba(108, 123, 255, 0.25), transparent 70%);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
       overflow: hidden;
       border-radius: 14px;
     }
     @media (prefers-color-scheme: dark) {
       html {
         background-color: var(--background-dark);
-        background-image: radial-gradient(at top center, rgba(88, 70, 160, 0.45), transparent 70%);
+        background-image: radial-gradient(at top center, rgba(116, 82, 220, 0.4), transparent 70%);
       }
     }
     body {
@@ -43,18 +39,16 @@
       background: transparent;
     }
     @media (prefers-color-scheme: dark) {
-      body {
-        color: var(--text-dark);
-      }
+      body { color: var(--text-dark); }
     }
     .settings-card {
       background: var(--card-background-light);
       border: 1px solid var(--border-light);
       border-radius: 10px;
       margin-bottom: 8px;
-      backdrop-filter: blur(10px) saturate(150%);
-      -webkit-backdrop-filter: blur(10px) saturate(150%);
-      overflow: hidden; /* This is necessary for the border-radius to clip content */
+      backdrop-filter: blur(12px) saturate(160%);
+      -webkit-backdrop-filter: blur(12px) saturate(160%);
+      overflow: hidden;
     }
     @media (prefers-color-scheme: dark) {
       .settings-card {
@@ -67,7 +61,6 @@
       font-weight: 500;
       padding: 10px 12px;
       cursor: pointer;
-      list-style: none;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -110,26 +103,16 @@
       gap: 12px;
       padding: 6px 0;
     }
-    .label {
-      font-size: 13px;
-      white-space: nowrap;
-    }
-    .switch {
-      position: relative;
-      width: 40px;
-      height: 22px;
-      flex-shrink: 0;
-    }
+    .label { font-size: 13px; }
+    .switch { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
     .switch input { display: none; }
     .track {
       position: absolute;
       inset: 0;
       border-radius: 11px;
       background: #c8ccd1;
-      transition: background .2s ease;
+      transition: background 0.2s ease;
     }
-    input:checked + .track { background: var(--primary-accent); }
-    @media (prefers-color-scheme: dark) { .track { background: #555; } }
     .thumb {
       position: absolute;
       top: 2px;
@@ -137,79 +120,119 @@
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      background: white;
-      box-shadow: 0 1px 3px rgba(0,0,0,.25);
-      transition: transform .2s ease;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+      transition: transform 0.2s ease;
     }
-    input:checked + .track .thumb { transform: translateX(18px); }
-    .credit {
-      padding-top: 4px;
-      font-size: 12px;
-      opacity: .7;
-      text-align: center;
-    }
-    .credit a { color: inherit; }
-    input[type="text"] {
-      width: 100%;
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: 1px solid var(--border-light);
-      background-color: var(--input-background-light);
-      color: inherit;
-      font-size: 12px;
+    .switch input:checked + .track { background: var(--primary-accent); }
+    .switch input:checked + .track .thumb { transform: translateX(18px); }
+    .slider {
       -webkit-appearance: none;
-      appearance: none;
-      transition: border-color .2s ease, background-color .2s ease;
-    }
-    @media (prefers-color-scheme: dark) {
-      input[type="text"] {
-        border: 1px solid var(--border-dark);
-        background-color: var(--input-background-dark);
-      }
-    }
-    input[type="file"] {
-      font-size: 12px;
       width: 100%;
+      height: 4px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(108, 123, 255, 0.6), rgba(58, 198, 255, 0.6));
+      outline: none;
     }
-    button {
-      font-size: 12px;
-      padding: 6px 10px;
-      border: 1px solid var(--border-light);
-      background: var(--input-background-light);
-      color: inherit;
-      border-radius: 6px;
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid var(--primary-accent);
       cursor: pointer;
-      transition: background-color .2s ease;
     }
-    button:hover { background: var(--hover-background-light); }
+    .row-input { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+    .input-group { display: flex; gap: 8px; }
+    .input-group input[type="url"] {
+      flex: 1;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(125, 137, 170, 0.4);
+      background: rgba(255, 255, 255, 0.65);
+    }
     @media (prefers-color-scheme: dark) {
-      button {
-        border: 1px solid var(--border-dark);
-        background: var(--input-background-dark);
+      .input-group input[type="url"] {
+        border-color: rgba(120, 130, 180, 0.35);
+        background: rgba(25, 27, 40, 0.75);
+        color: inherit;
       }
-      button:hover { background: var(--hover-background-dark); }
     }
-    input[type="range"] {
-      width: 100%;
-      accent-color: var(--primary-accent);
+    .input-actions { display: flex; gap: 8px; align-items: center; }
+    .input-actions button {
+      border: none;
+      border-radius: 8px;
+      background: rgba(108, 123, 255, 0.15);
+      color: inherit;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: background 0.2s ease;
     }
-    .file-input-wrapper {
+    .input-actions button:hover { background: rgba(108, 123, 255, 0.25); }
+    .custom-select-wrapper { position: relative; display: inline-block; min-width: 130px; }
+    .custom-select { position: relative; }
+    .select-trigger {
       display: flex;
-      gap: 10px;
       align-items: center;
+      justify-content: space-between;
+      gap: 8px;
       width: 100%;
+      padding: 6px 10px;
+      border: 1px solid rgba(110, 125, 160, 0.35);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
     }
+    @media (prefers-color-scheme: dark) {
+      .select-trigger {
+        border-color: rgba(110, 125, 160, 0.25);
+        background: rgba(30, 32, 48, 0.82);
+      }
+    }
+    .select-options {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: inherit;
+      border: 1px solid rgba(110, 125, 160, 0.35);
+      border-radius: 8px;
+      margin-top: 4px;
+      z-index: 10;
+      display: none;
+      overflow: hidden;
+    }
+    .select-option {
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .select-option:hover { background: rgba(108, 123, 255, 0.16); }
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      opacity: 0.7;
+    }
+    .credit {
+      text-align: center;
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 8px;
+    }
+    .credit a { color: inherit; text-decoration: none; font-weight: 600; }
   </style>
 </head>
 <body>
-
   <details class="settings-card" open>
     <summary class="card-title" data-i18n="sectionBackground">__MSG_sectionBackground__</summary>
     <div class="card-content">
       <div class="row">
         <div class="label" data-i18n="labelPreset">__MSG_labelPreset__</div>
         <div class="custom-select-wrapper">
-          <div class="custom-select" id="bgPreset">
+          <div class="custom-select" id="presetSelector">
             <button type="button" class="select-trigger" aria-haspopup="listbox" aria-expanded="false">
               <span class="select-label"></span>
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -219,29 +242,38 @@
         </div>
       </div>
       <div class="row">
-        <input type="text" id="bgUrl" placeholder="__MSG_placeholderBgUrl__" data-i18n-placeholder="placeholderBgUrl">
-      </div>
-      <div class="row">
-          <div class="file-input-wrapper">
-              <input type="file" id="bgFile" accept="image/*, video/mp4, video/webm, video/ogg">
-              <button id="clearBg" data-i18n="buttonReset">__MSG_buttonReset__</button>
-          </div>
-      </div>
-      <div class="row">
-        <div class="label" data-i18n="labelBlur">__MSG_labelBlur__</div>
-        <input type="range" id="blurSlider" min="0" max="150" step="1">
-        <span id="blurValue" style="min-width: 3ch; text-align: right;">60</span>px
-      </div>
-      <div class="row">
         <div class="label" data-i18n="labelScaling">__MSG_labelScaling__</div>
         <div class="custom-select-wrapper">
-          <div class="custom-select" id="bgScalingSelector">
+          <div class="custom-select" id="scalingSelector">
             <button type="button" class="select-trigger" aria-haspopup="listbox" aria-expanded="false">
               <span class="select-label"></span>
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </button>
             <div class="select-options" role="listbox"></div>
           </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-input">
+          <div class="label" data-i18n="placeholderBgUrl">__MSG_placeholderBgUrl__</div>
+          <div class="input-group">
+            <input type="url" id="bgUrl" data-i18n-placeholder="placeholderBgUrl" placeholder="__MSG_placeholderBgUrl__">
+          </div>
+          <div class="input-actions">
+            <label class="status" for="bgFile">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 10.5L12 7l-3.5 3.5"></path><path d="M12 7v9"></path><path d="M20 21H4"></path></svg>
+              <span data-i18n="labelLocalFile">__MSG_labelLocalFile__</span>
+            </label>
+            <input type="file" id="bgFile" accept="image/*,video/*" hidden>
+            <button id="clearBg" data-i18n="buttonReset">__MSG_buttonReset__</button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="label" data-i18n="labelBlur">__MSG_labelBlur__</div>
+        <div class="row-input">
+          <input type="range" min="0" max="120" id="blurSlider" class="slider">
+          <div class="status"><span id="blurValue">60</span>px</div>
         </div>
       </div>
     </div>
@@ -285,15 +317,15 @@
       <div class="row">
         <div class="label" data-i18n="labelFocusMode">__MSG_labelFocusMode__</div>
         <label class="switch" title="__MSG_tooltipFocusMode__" data-i18n-title="tooltipFocusMode">
-            <input type="checkbox" id="focusMode">
-            <span class="track"><span class="thumb"></span></span>
+          <input type="checkbox" id="focusMode">
+          <span class="track"><span class="thumb"></span></span>
         </label>
       </div>
       <div class="row">
         <div class="label" data-i18n="labelHideQuickSettings">__MSG_labelHideQuickSettings__</div>
         <label class="switch" title="__MSG_tooltipHideQuickSettings__" data-i18n-title="tooltipHideQuickSettings">
-            <input type="checkbox" id="hideQuickSettings">
-            <span class="track"><span class="thumb"></span></span>
+          <input type="checkbox" id="hideQuickSettings">
+          <span class="track"><span class="thumb"></span></span>
         </label>
       </div>
       <div class="row">
@@ -303,63 +335,37 @@
           <span class="track"><span class="thumb"></span></span>
         </label>
       </div>
-    </div>
-  </details>
-
-  <details class="settings-card">
-    <summary class="card-title" data-i18n="sectionVoiceUi">__MSG_sectionVoiceUi__</summary>
-    <div class="card-content">
       <div class="row">
-          <div class="label" data-i18n="labelVoiceColor">__MSG_labelVoiceColor__</div>
-          <div class="custom-select-wrapper">
-            <div class="custom-select" id="voiceColorSelector">
-              <button type="button" class="select-trigger" aria-haspopup="listbox" aria-expanded="false">
-                <span class="color-dot"></span>
-                <span class="select-label"></span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-              </button>
-              <div class="select-options" role="listbox"></div>
-            </div>
-          </div>
-      </div>
-      <div class="row">
-          <div class="label" data-i18n="labelCuteVoice">__MSG_labelCuteVoice__</div>
-          <label class="switch" title="__MSG_tooltipCuteVoice__" data-i18n-title="tooltipCuteVoice">
-              <input type="checkbox" id="cuteVoiceUI">
-              <span class="track"><span class="thumb"></span></span>
-          </label>
+        <div class="label" data-i18n="labelHideLeftNav">__MSG_labelHideLeftNav__</div>
+        <label class="switch" title="__MSG_tooltipHideLeftNav__" data-i18n-title="tooltipHideLeftNav">
+          <input type="checkbox" id="hideLeftNav">
+          <span class="track"><span class="thumb"></span></span>
+        </label>
       </div>
     </div>
   </details>
 
   <details class="settings-card">
-    <summary class="card-title" data-i18n="sectionHideElements">__MSG_sectionHideElements__</summary>
+    <summary class="card-title" data-i18n="sectionPromotions">__MSG_sectionPromotions__</summary>
     <div class="card-content">
       <div class="row">
-        <div class="label" data-i18n="labelHideGpt5Limit">__MSG_labelHideGpt5Limit__</div>
-        <label class="switch" title="__MSG_tooltipHideGpt5Limit__" data-i18n-title="tooltipHideGpt5Limit">
-          <input type="checkbox" id="hideGpt5Limit">
+        <div class="label" data-i18n="labelHideUsageLimit">__MSG_labelHideUsageLimit__</div>
+        <label class="switch" title="__MSG_tooltipHideUsageLimit__" data-i18n-title="tooltipHideUsageLimit">
+          <input type="checkbox" id="hideUsageLimit">
           <span class="track"><span class="thumb"></span></span>
         </label>
       </div>
       <div class="row">
-        <div class="label" data-i18n="labelHideUpgradeButtons">__MSG_labelHideUpgradeButtons__</div>
-        <label class="switch" title="__MSG_tooltipHideUpgradeButtons__" data-i18n-title="tooltipHideUpgradeButtons">
-          <input type="checkbox" id="hideUpgradeButtons">
+        <div class="label" data-i18n="labelHideUpgradePromos">__MSG_labelHideUpgradePromos__</div>
+        <label class="switch" title="__MSG_tooltipHideUpgradePromos__" data-i18n-title="tooltipHideUpgradePromos">
+          <input type="checkbox" id="hideUpgradePromos">
           <span class="track"><span class="thumb"></span></span>
         </label>
       </div>
       <div class="row">
-        <div class="label" data-i18n="labelHideGptsButton">__MSG_labelHideGptsButton__</div>
-        <label class="switch" title="__MSG_tooltipHideGptsButton__" data-i18n-title="tooltipHideGptsButton">
-          <input type="checkbox" id="hideGptsButton">
-          <span class="track"><span class="thumb"></span></span>
-        </label>
-      </div>
-      <div class="row">
-        <div class="label" data-i18n="labelHideSoraButton">__MSG_labelHideSoraButton__</div>
-        <label class="switch" title="__MSG_tooltipHideSoraButton__" data-i18n-title="tooltipHideSoraButton">
-          <input type="checkbox" id="hideSoraButton">
+        <div class="label" data-i18n="labelHideImaginePromo">__MSG_labelHideImaginePromo__</div>
+        <label class="switch" title="__MSG_tooltipHideImaginePromo__" data-i18n-title="tooltipHideImaginePromo">
+          <input type="checkbox" id="hideImaginePromo">
           <span class="track"><span class="thumb"></span></span>
         </label>
       </div>
@@ -374,7 +380,4 @@
   <script src="popup.js"></script>
 </body>
 </html>
-
-
-
 
