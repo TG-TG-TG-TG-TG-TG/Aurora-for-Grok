@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extensionName__",
+  "version": "1.5.3",
+  "default_locale": "en",
+  "description": "__MSG_extensionDescription__",
+  "icons": {
+    "16":  "icons/logo-16.png",
+    "32":  "icons/logo-32.png",
+    "48":  "icons/logo-48.png",
+    "128": "icons/logo-128.png"
+  },
+  "permissions": ["storage"],
+  "action": {
+    "default_title": "__MSG_actionTitle__",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16":  "icons/logo-16.png",
+      "32":  "icons/logo-32.png",
+      "48":  "icons/logo-48.png",
+      "128": "icons/logo-128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chat.openai.com/*",
+        "https://chatgpt.com/*",
+        "https://openai.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["styles.css", "sidebar.css"],
+      "run_at": "document_start"
+    }
+  ]
+}
