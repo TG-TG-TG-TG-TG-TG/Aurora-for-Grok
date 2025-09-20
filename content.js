@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   const getAssetUrl = (relativePath) => (typeof chrome !== 'undefined' && chrome?.runtime?.getURL) ? chrome.runtime.getURL(relativePath) : relativePath;
 
   const ID = 'grok-ambient-bg';
@@ -15,6 +15,8 @@
   const CHATGPT_BACKGROUND_IMAGE = getAssetUrl('Aurora/Chatgpt.webp');
   const CHATGPT_SENTINEL = '__chatgpt__';
   const CHATGPT_MODE_CLASS = 'grok-chatgpt-bg';
+  const APPEARANCE_CLEAR_CLASS = 'grok-appearance-clear';
+  const APPEARANCE_DIMMED_CLASS = 'grok-appearance-dimmed';
 
   const HIDE_USAGE_CLASS = 'grok-hide-usage-notice';
   const HIDE_UPGRADE_CLASS = 'grok-hide-upgrade-promo';
@@ -39,6 +41,7 @@
     customBgUrl: '',
     backgroundBlur: '60',
     backgroundScaling: 'contain',
+    appearance: 'dimmed',
     showInNewChatsOnly: false,
     hideImaginePromo: false,
     hideLeftNav: false
@@ -394,6 +397,9 @@
     root.classList.toggle(ANIMATIONS_DISABLED_CLASS, !!settings.disableAnimations);
     root.classList.toggle(FOCUS_CLASS, !!settings.focusMode);
     root.classList.toggle('grok-hide-left-nav', !!settings.hideLeftNav || !!settings.focusMode);
+    const isClear = (settings.appearance || DEFAULTS.appearance) === 'clear';
+    root.classList.toggle(APPEARANCE_CLEAR_CLASS, isClear);
+    root.classList.toggle(APPEARANCE_DIMMED_CLASS, !isClear);
 
     let forceLight = false;
     if (settings.theme === 'light') {
@@ -535,6 +541,9 @@
     startObservers();
   }
 })();
+
+
+
 
 
 

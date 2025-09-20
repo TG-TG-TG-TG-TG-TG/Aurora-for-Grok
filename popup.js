@@ -1,4 +1,4 @@
-﻿// popup.js - Aurora for Grok settings
+// popup.js - Aurora for Grok settings
 const DEFAULTS = {
   legacyComposer: false,
   theme: 'auto',
@@ -10,6 +10,7 @@ const DEFAULTS = {
   customBgUrl: '',
   backgroundBlur: '60',
   backgroundScaling: 'contain',
+  appearance: 'dimmed',
   showInNewChatsOnly: false,
   hideImaginePromo: false,
   hideLeftNav: false
@@ -169,6 +170,12 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
   const themeSelect = createCustomSelect('themeSelector', themeOptions, 'theme');
 
+  const appearanceOptions = [
+    { value: 'dimmed', labelKey: 'appearanceOptionDimmed' },
+    { value: 'clear', labelKey: 'appearanceOptionClear' }
+  ];
+  const appearanceSelect = createCustomSelect('appearanceSelector', appearanceOptions, 'appearance');
+
   function updateUi(settings) {
     cbLegacy.checked = !!settings.legacyComposer;
     cbHideUsageLimit.checked = !!settings.hideUsageLimit;
@@ -184,6 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     bgScalingSelect.update(settings.backgroundScaling);
     themeSelect.update(settings.theme);
+    appearanceSelect.update(settings.appearance || 'dimmed');
 
     const url = settings.customBgUrl;
     tbBgUrl.disabled = false;
@@ -276,6 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
 
 
 

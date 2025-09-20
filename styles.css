@@ -29,7 +29,17 @@ html.grok-ambient-on body {
 #grok-ambient-bg .haze,
 
 #grok-ambient-bg .overlay {
+
+  position: absolute;
+
+  inset: 0;
+
+}
+
+#grok-ambient-bg .overlay {
+
   background: linear-gradient(180deg, rgba(8, 12, 22, 0.42), rgba(8, 12, 22, 0.6));
+
 }
 
 #grok-ambient-bg picture { display: block; }
@@ -94,6 +104,46 @@ html.grok-chatgpt-bg.grok-light-mode #grok-ambient-bg .overlay {
   background: linear-gradient(180deg, rgba(248, 249, 255, 0.6), rgba(250, 252, 255, 0.8));
   -webkit-backdrop-filter: blur(20px) saturate(140%);
   backdrop-filter: blur(20px) saturate(140%);
+}
+
+html.grok-appearance-clear #grok-ambient-bg .overlay {
+  background: linear-gradient(180deg, rgba(8, 12, 22, 0.18), rgba(8, 12, 22, 0.32));
+}
+
+html.grok-appearance-clear #grok-ambient-bg img,
+html.grok-appearance-clear #grok-ambient-bg video {
+  filter: blur(var(--grok-bg-blur-radius, 60px)) brightness(0.88);
+}
+
+html.grok-appearance-clear.grok-light-mode #grok-ambient-bg img,
+html.grok-appearance-clear.grok-light-mode #grok-ambient-bg video {
+  filter: blur(var(--grok-bg-blur-radius, 60px)) brightness(1);
+}
+
+html.grok-appearance-clear.grok-light-mode #grok-ambient-bg .overlay {
+  background: linear-gradient(180deg, rgba(245, 247, 252, 0.28), rgba(245, 247, 252, 0.44));
+}
+
+html.grok-appearance-clear.grok-chatgpt-bg #grok-ambient-bg .overlay {
+  background: linear-gradient(180deg, rgba(16, 20, 34, 0.16), rgba(12, 16, 26, 0.28));
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+}
+
+html.grok-appearance-clear.grok-chatgpt-bg #grok-ambient-bg img,
+html.grok-appearance-clear.grok-chatgpt-bg #grok-ambient-bg video {
+  filter: blur(var(--grok-bg-blur-radius, 60px)) brightness(0.92) saturate(1.08);
+}
+
+html.grok-appearance-clear.grok-chatgpt-bg.grok-light-mode #grok-ambient-bg .overlay {
+  background: linear-gradient(180deg, rgba(248, 249, 255, 0.34), rgba(250, 252, 255, 0.5));
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+  backdrop-filter: blur(18px) saturate(130%);
+}
+
+html.grok-appearance-clear.grok-chatgpt-bg.grok-light-mode #grok-ambient-bg img,
+html.grok-appearance-clear.grok-chatgpt-bg.grok-light-mode #grok-ambient-bg video {
+  filter: blur(var(--grok-bg-blur-radius, 60px)) brightness(1) saturate(1.04);
 }
 
 html.grok-animations-disabled * {
@@ -745,6 +795,70 @@ html.grok-ambient-on:not(.grok-legacy-composer) div[class*="bg-gradient-to-b"][c
   border-color: transparent !important;
   box-shadow: none !important;
 }
+html.grok-ambient-on:not(.grok-legacy-composer) div.absolute.inset-x-0.top-0.h-6.bg-gradient-to-b.from-background.to-transparent.z-10,
+html.grok-ambient-on:not(.grok-legacy-composer) div.absolute.inset-x-0.bottom-0.h-6.bg-gradient-to-t.from-background.to-transparent.z-10 {
+  display: none !important;
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) ul.flex.flex-col-reverse.sm\:flex-col.z-10.no-touch-scrollbar.bg-background.w-full.max-w-breakout.overflow-visible.\-mt-2:empty {
+  display: none !important;
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) ul.flex.flex-col-reverse.sm\:flex-col.z-10.no-touch-scrollbar.bg-background.w-full.max-w-breakout.overflow-visible.\-mt-2 {
+  background: rgba(12, 18, 32, 0.58) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 18px 38px rgba(6, 10, 22, 0.28);
+  -webkit-backdrop-filter: blur(26px) saturate(170%);
+  backdrop-filter: blur(26px) saturate(170%);
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) ul.flex.flex-col-reverse.sm\:flex-col.z-10.no-touch-scrollbar.bg-background.w-full.max-w-breakout.overflow-visible.\-mt-2 > li,
+html.grok-ambient-on:not(.grok-legacy-composer) ul.flex.flex-col-reverse.sm\:flex-col.z-10.no-touch-scrollbar.bg-background.w-full.max-w-breakout.overflow-visible.\-mt-2 > li > div {
+  background: transparent !important;
+}
+
+html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) ul.flex.flex-col-reverse.sm\:flex-col.z-10.no-touch-scrollbar.bg-background.w-full.max-w-breakout.overflow-visible.\-mt-2 {
+  background: rgba(12, 18, 32, 0.32) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 16px 34px rgba(6, 10, 22, 0.18);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  backdrop-filter: blur(22px) saturate(150%);
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) div.bg-background.rounded-full {
+  background: rgba(12, 18, 32, 0.54) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 14px 32px rgba(6, 10, 22, 0.24);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) div.bg-background.rounded-full > button {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  color: inherit !important;
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) div.bg-background.rounded-full > button:hover,
+html.grok-ambient-on:not(.grok-legacy-composer) div.bg-background.rounded-full > button:focus-visible {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  color: var(--aurora-button-hover-color, inherit) !important;
+}
+
+html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) div.bg-background.rounded-full {
+  background: rgba(12, 18, 32, 0.24) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 12px 28px rgba(6, 10, 22, 0.16);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+}
+
+html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) div.bg-background.rounded-full > button:hover,
+html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) div.bg-background.rounded-full > button:focus-visible {
+  background-color: rgba(255, 255, 255, 0.18) !important;
+}
+
 
 html.grok-ambient-on:not(.grok-legacy-composer) thead.sticky {
   background-color: transparent !important;
@@ -794,14 +908,60 @@ html.grok-ambient-on:not(.grok-legacy-composer) button[data-show-all="true"] {
   backdrop-filter: blur(14px) saturate(150%);
 }
 
-html.grok-ambient-on:not(.grok-legacy-composer) [data-radix-popper-content-wrapper] [role="dialog"],
-html.grok-ambient-on:not(.grok-legacy-composer) [data-radix-popper-content-wrapper] .bg-popover {
-  background: transparent !important;
-  border: 1px solid rgba(255, 255, 255, 0.18) !important;
-  box-shadow: 0 18px 40px rgba(8, 12, 24, 0.24);
-  -webkit-backdrop-filter: blur(30px) saturate(170%);
-  backdrop-filter: blur(30px) saturate(170%);
+/* CRITICAL FIX: Exclude the main Settings dialog from Aurora modifications */
+/* Settings dialog should maintain its original positioning and styling */
+html.grok-ambient-on div[role="dialog"]#radix-\:rb9\:,
+html.grok-ambient-on div[role="dialog"][aria-labelledby*="radix-"]:has(h2:first-child:contains("Settings")) {
+  /* Reset all Aurora modifications for the settings dialog */
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  background: var(--background) !important;
+  border: 1px solid var(--border) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2) !important;
+  z-index: 99999 !important;
 }
+
+/* Additional specificity for Settings dialog - use attribute selector */
+html.grok-ambient-on div[role="dialog"][data-state="open"][class*="translate-x"][class*="translate-y"] {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 99999 !important;
+}
+
+/* Don't apply Aurora background modifications to Settings dialog content */
+html.grok-ambient-on div[role="dialog"][data-state="open"] .bg-background,
+html.grok-ambient-on div[role="dialog"][data-state="open"] .bg-surface,
+html.grok-ambient-on div[role="dialog"][data-state="open"] .bg-dialog {
+  background: inherit !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Other dialogs and popovers (not the Settings dialog) */
+html.grok-ambient-on:not(.grok-legacy-composer) [role="dialog"]:not([data-state="open"]):not(#radix-\:rb9\:),
+html.grok-ambient-on:not(.grok-legacy-composer) [data-radix-popper-content-wrapper] [role="dialog"] {
+  background: rgba(12, 18, 32, 0.62) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 22px 46px rgba(6, 10, 22, 0.32);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  backdrop-filter: blur(32px) saturate(180%);
+}
+
+html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) [role="dialog"]:not([data-state="open"]):not(#radix-\:rb9\:),
+html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) [data-radix-popper-content-wrapper] [role="dialog"] {
+  background: rgba(12, 18, 32, 0.36) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 18px 40px rgba(6, 10, 22, 0.24);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  backdrop-filter: blur(28px) saturate(160%);
+}
+
 html.grok-ambient-on:not(.grok-legacy-composer) .flex-1.overflow-hidden.text-primary.font-semibold {
   background: transparent !important;
 }
@@ -820,8 +980,79 @@ html.grok-ambient-on:not(.grok-legacy-composer) [role="dialog"].bg-surface {
   backdrop-filter: blur(32px) saturate(180%);
 }
 
+html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) [role="dialog"][class*="bg-background"],
+html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) [role="dialog"].bg-dialog,
+html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) [role="dialog"].bg-surface {
+  background: rgba(12, 18, 32, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 18px 40px rgba(6, 10, 22, 0.24);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  backdrop-filter: blur(28px) saturate(160%);
+}
+
 html.grok-ambient-on:not(.grok-legacy-composer) [role="dialog"][class*="bg-background"] .sm\:flex-row > .flex-1,
 html.grok-ambient-on:not(.grok-legacy-composer) [role="dialog"][class*="bg-background"] .flex-1.w-full.h-full {
   background: transparent !important;
 }
+
+
+
+html.grok-ambient-on:not(.grok-legacy-composer) div[data-state="open"].bg-overlay {
+  background: rgba(8, 12, 22, 0.62) !important;
+  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(22px);
+}
+
+html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) div[data-state="open"].bg-overlay {
+  background: rgba(8, 12, 22, 0.34) !important;
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) div[role="dialog"][aria-describedby="Image editor"] {
+  position: fixed !important;
+  background: transparent !important;
+  overflow: hidden;
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) div[role="dialog"][aria-describedby="Image editor"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(12, 18, 32, 0.48);
+  border: none;
+  box-shadow: none;
+  -webkit-backdrop-filter: blur(34px) saturate(180%);
+  backdrop-filter: blur(34px) saturate(180%);
+  z-index: 0;
+}
+
+html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) div[role="dialog"][aria-describedby="Image editor"]::before {
+  background: rgba(12, 18, 32, 0.22);
+  border: none;
+  box-shadow: none;
+  -webkit-backdrop-filter: blur(26px) saturate(160%);
+  backdrop-filter: blur(26px) saturate(160%);
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) div[role="dialog"][aria-describedby="Image editor"] > * {
+  position: relative;
+  z-index: 1;
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) div[role="dialog"][aria-describedby="Image editor"] form.w-full.rounded-\[32px\] {
+  background: rgba(12, 18, 32, 0.32) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 18px 34px rgba(6, 10, 22, 0.24);
+}
+
+html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) div[role="dialog"][aria-describedby="Image editor"] form.w-full.rounded-\[32px\] {
+  background: rgba(12, 18, 32, 0.18) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 16px 28px rgba(6, 10, 22, 0.18);
+}
+
+
+
 

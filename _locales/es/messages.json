@@ -35,6 +35,15 @@
     "labelTheme":  {
                        "message":  "Tema"
                    },
+    "labelGlassAppearance":  {
+                              "message":  "Tono del vidrio"
+                          },
+    "appearanceOptionDimmed":  {
+                                  "message":  "Atenuado"
+                              },
+    "appearanceOptionClear":  {
+                                 "message":  "Transparente"
+                             },
     "labelLegacyComposer":  {
                                 "message":  "Editor clasico"
                             },

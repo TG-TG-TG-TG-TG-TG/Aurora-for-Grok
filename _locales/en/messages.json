@@ -35,6 +35,15 @@
     "labelTheme":  {
                        "message":  "Theme"
                    },
+    "labelGlassAppearance":  {
+                              "message":  "Glass tint"
+                          },
+    "appearanceOptionDimmed":  {
+                                  "message":  "Dimmed"
+                              },
+    "appearanceOptionClear":  {
+                                 "message":  "Clear"
+                             },
     "labelLegacyComposer":  {
                                 "message":  "Standard composer"
                             },
