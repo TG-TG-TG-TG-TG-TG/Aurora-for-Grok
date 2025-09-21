@@ -1092,3 +1092,26 @@ html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) div[role="
 
 
 
+html.grok-ambient-on.grok-legacy-composer div.relative.rounded-3xl.w-full.h-full.overflow-hidden.backdrop-blur-lg.border.border-border-l1.bg-input.max-w-\[90%\] {
+  background: rgba(12, 18, 32, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 16px 34px rgba(6, 10, 22, 0.22);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  backdrop-filter: blur(24px) saturate(170%);
+}
+
+html.grok-ambient-on.grok-legacy-composer div.relative.rounded-3xl.w-full.h-full.overflow-hidden.backdrop-blur-lg.border.border-border-l1.bg-input.max-w-\[90%\] > .flex {
+  background: transparent !important;
+}
+
+html.grok-ambient-on.grok-appearance-clear.grok-legacy-composer div.relative.rounded-3xl.w-full.h-full.overflow-hidden.backdrop-blur-lg.border.border-border-l1.bg-input.max-w-\[90%\] {
+  background: rgba(12, 18, 32, 0.24) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 14px 28px rgba(6, 10, 22, 0.18);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+}
+
+html.grok-ambient-on.grok-appearance-clear.grok-legacy-composer div.relative.rounded-3xl.w-full.h-full.overflow-hidden.backdrop-blur-lg.border.border-border-l1.bg-input.max-w-\[90%\] > .flex {
+  background: transparent !important;
+}
