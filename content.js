@@ -470,6 +470,20 @@
     }
     observersStarted = true;
 
+    const uiReadyObserver = new MutationObserver((mutations, obs) => {
+      const stableUiElement = document.querySelector('.query-bar');
+
+      if (stableUiElement) {
+        applyAllSettings();
+        obs.disconnect();
+      }
+    });
+
+    uiReadyObserver.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
     window.addEventListener('focus', applyAllSettings, { passive: true });
 
     let lastUrl = location.href;
@@ -541,11 +555,3 @@
     startObservers();
   }
 })();
-
-
-
-
-
-
-
-
