@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html>
 <head>
   <meta charset="utf-8" />
@@ -7,232 +7,136 @@
   <style>
     :root {
       color-scheme: light dark;
-      --background-light: #f0f4f8;
-      --background-dark: #11121b;
-      --text-light: #1d1d22;
+      /* --- Base Colors (Dark Theme) --- */
+      --background-dark: #1a1a1f;
       --text-dark: #f0f4f8;
-      --card-background-light: rgba(255, 255, 255, 0.75);
-      --card-background-dark: rgba(27, 28, 36, 0.82);
-      --border-light: rgba(0, 0, 0, 0.1);
+      --card-background-dark: rgba(40, 40, 40, 0.55);
       --border-dark: rgba(255, 255, 255, 0.18);
-      --primary-accent: #6c7bff;
+      --input-background-dark: rgba(255, 255, 255, 0.08);
+      --hover-background-dark: rgba(255, 255, 255, 0.15);
+      --primary-accent: #4f8cff;
+      /* --- Base Colors (Light Theme) --- */
+      --background-light: #f0f4f8;
+      --text-light: #1d1d1f;
+      --card-background-light: rgba(245, 245, 245, 0.7);
+      --border-light: rgba(0, 0, 0, 0.1);
+      --input-background-light: rgba(0, 0, 0, 0.05);
+      --hover-background-light: rgba(0, 0, 0, 0.1);
     }
     html {
-      background-color: var(--background-light);
-      background-image: radial-gradient(at top center, rgba(108, 123, 255, 0.25), transparent 70%);
-      backdrop-filter: blur(16px) saturate(160%);
-      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      background-color: var(--background-dark);
+      background-image: radial-gradient(at top center, rgba(88, 70, 160, 0.45), transparent 70%);
       overflow: hidden;
       border-radius: 14px;
     }
-    @media (prefers-color-scheme: dark) {
-      html {
-        background-color: var(--background-dark);
-        background-image: radial-gradient(at top center, rgba(116, 82, 220, 0.4), transparent 70%);
-      }
+    html.theme-light {
+      background-color: var(--background-light);
+      background-image: radial-gradient(at top center, rgba(79, 140, 255, 0.2), transparent 70%);
     }
     body {
       font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
       margin: 10px;
       min-width: 310px;
-      color: var(--text-light);
+      color: var(--text-dark);
       background: transparent;
     }
-    @media (prefers-color-scheme: dark) {
-      body { color: var(--text-dark); }
-    }
+    html.theme-light body { color: var(--text-light); }
     .settings-card {
-      background: var(--card-background-light);
-      border: 1px solid var(--border-light);
-      border-radius: 10px;
+      background: var(--card-background-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 18px;
       margin-bottom: 8px;
-      backdrop-filter: blur(12px) saturate(160%);
-      -webkit-backdrop-filter: blur(12px) saturate(160%);
-      overflow: hidden;
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      backdrop-filter: blur(24px) saturate(180%);
+      overflow: hidden; /* Important: remains hidden by default */
     }
-    @media (prefers-color-scheme: dark) {
-      .settings-card {
-        background: var(--card-background-dark);
-        border: 1px solid var(--border-dark);
-      }
+    html.theme-light .settings-card {
+      background: var(--card-background-light);
+      border-color: var(--border-light);
     }
+    details.settings-card { position: relative; }
+    details.settings-card:has(.custom-select.is-open) { z-index: 10; overflow: visible; }
     .card-title {
-      font-size: 15px;
-      font-weight: 500;
-      padding: 10px 12px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: margin 0.2s ease;
+      font-size: 15px; font-weight: 500; padding: 10px 12px;
+      cursor: pointer; list-style: none; display: flex;
+      justify-content: space-between; align-items: center;
     }
     .card-title::-webkit-details-marker { display: none; }
     .card-title::after {
       content: '';
       display: inline-block;
-      width: 16px;
-      height: 16px;
-      background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: 16px;
-      transform: rotate(0deg);
-      transition: transform 0.2s ease;
+      width: 6px;
+      height: 6px;
+      border-bottom: 2px solid;
+      border-right: 2px solid;
+      color: inherit;
       opacity: 0.6;
+      transform: rotate(45deg); /* Points down */
+      transition: transform 0.2s ease, margin-bottom 0.2s ease;
+      margin-bottom: 3px; /* Adjusts vertical alignment */
     }
-    @media (prefers-color-scheme: dark) {
-      .card-title::after {
-        background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
-      }
+    html.theme-light .card-title::after {
+      background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
     }
-    .settings-card[open] > .card-title::after { transform: rotate(180deg); }
     .settings-card[open] > .card-title {
-      border-bottom: 1px solid var(--border-light);
-      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-dark); padding-bottom: 10px;
     }
-    @media (prefers-color-scheme: dark) {
-      .settings-card[open] > .card-title { border-bottom-color: var(--border-dark); }
+    html.theme-light .settings-card[open] > .card-title { border-bottom-color: var(--border-light); }
+    .settings-card[open] > .card-title::after {
+      transform: rotate(-135deg); /* Points up */
+      margin-bottom: 0px; /* Re-aligns when flipped */
     }
-    .card-content {
-      padding: 4px 12px 12px 12px;
+    .card-content { padding: 4px 12px 12px 12px; }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 0; }
+    .label {
+      flex-grow: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 13px;
+      white-space: nowrap;
     }
-    .row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 6px 0;
-    }
-    .label { font-size: 13px; }
     .switch { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
     .switch input { display: none; }
     .track {
-      position: absolute;
-      inset: 0;
-      border-radius: 11px;
-      background: #c8ccd1;
-      transition: background 0.2s ease;
+      position: absolute; inset: 0; border-radius: 11px;
+      background: rgba(255, 255, 255, 0.15); transition: background .2s ease;
     }
+    html.theme-light .track { background: rgba(0, 0, 0, 0.15); }
+    input:checked + .track { background: var(--primary-accent); }
     .thumb {
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.35);
-      transition: transform 0.2s ease;
+      position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%;
+      background: white; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .2s ease;
     }
-    .switch input:checked + .track { background: var(--primary-accent); }
-    .switch input:checked + .track .thumb { transform: translateX(18px); }
-    .slider {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 4px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(108, 123, 255, 0.6), rgba(58, 198, 255, 0.6));
-      outline: none;
+    input:checked + .track .thumb { transform: translateX(18px); }
+    .credit { padding-top: 4px; font-size: 12px; opacity: .7; text-align: center; }
+    .credit a { color: inherit; }
+    input[type="text"], button, .file-input-label {
+      font-size: 12px; padding: 6px 10px; border-radius: 6px; color: inherit;
+      border: 1px solid var(--border-dark); background-color: var(--input-background-dark);
+      transition: border-color .2s ease, background-color .2s ease;
     }
-    .slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #ffffff;
-      border: 2px solid var(--primary-accent);
-      cursor: pointer;
+    html.theme-light input[type="text"], html.theme-light button, html.theme-light .file-input-label {
+      border-color: var(--border-light); background-color: var(--input-background-light);
     }
-    .row-input { display: flex; flex-direction: column; gap: 6px; width: 100%; }
-    .input-group { display: flex; gap: 8px; }
-    .input-group input[type="url"] {
-      flex: 1;
-      padding: 6px 8px;
-      border-radius: 8px;
-      border: 1px solid rgba(125, 137, 170, 0.4);
-      background: rgba(255, 255, 255, 0.65);
-    }
-    @media (prefers-color-scheme: dark) {
-      .input-group input[type="url"] {
-        border-color: rgba(120, 130, 180, 0.35);
-        background: rgba(25, 27, 40, 0.75);
-        color: inherit;
-      }
-    }
-    .input-actions { display: flex; gap: 8px; align-items: center; }
-    .input-actions button {
-      border: none;
-      border-radius: 8px;
-      background: rgba(108, 123, 255, 0.15);
-      color: inherit;
-      padding: 6px 10px;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-    .input-actions button:hover { background: rgba(108, 123, 255, 0.25); }
-    .custom-select-wrapper { position: relative; display: inline-block; min-width: 130px; }
-    .custom-select { position: relative; }
-    .select-trigger {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      width: 100%;
-      padding: 6px 10px;
-      border: 1px solid rgba(110, 125, 160, 0.35);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.7);
-      cursor: pointer;
-    }
-    @media (prefers-color-scheme: dark) {
-      .select-trigger {
-        border-color: rgba(110, 125, 160, 0.25);
-        background: rgba(30, 32, 48, 0.82);
-      }
-    }
-    .select-options {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: inherit;
-      border: 1px solid rgba(110, 125, 160, 0.35);
-      border-radius: 8px;
-      margin-top: 4px;
-      z-index: 10;
-      display: none;
-      overflow: hidden;
-    }
-    .select-option {
-      padding: 6px 10px;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-    .select-option:hover { background: rgba(108, 123, 255, 0.16); }
-    .status {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      opacity: 0.7;
-    }
-    .credit {
-      text-align: center;
-      font-size: 12px;
-      opacity: 0.8;
-      margin-top: 8px;
-    }
-    .credit a { color: inherit; text-decoration: none; font-weight: 600; }
+    button, .file-input-label { cursor: pointer; }
+    button:hover, .file-input-label:hover { background: var(--hover-background-dark); }
+    html.theme-light button:hover, html.theme-light .file-input-label:hover { background: var(--hover-background-light); }
+    input[type="text"] { width: 100%; -webkit-appearance: none; appearance: none; }
+    input[type="range"] { width: 100%; accent-color: var(--primary-accent); }
+    .file-input-wrapper { display: flex; gap: 10px; align-items: center; width: 100%; }
+    input[type="file"] { width: 0.1px; height: 0.1px; opacity: 0; overflow: hidden; position: absolute; z-index: -1; }
+    .file-input-label { flex-shrink: 0; white-space: nowrap; }
   </style>
 </head>
 <body>
+
   <details class="settings-card" open>
     <summary class="card-title" data-i18n="sectionBackground">__MSG_sectionBackground__</summary>
     <div class="card-content">
       <div class="row">
         <div class="label" data-i18n="labelPreset">__MSG_labelPreset__</div>
         <div class="custom-select-wrapper">
-          <div class="custom-select" id="presetSelector">
+          <div class="custom-select" id="bgPreset">
             <button type="button" class="select-trigger" aria-haspopup="listbox" aria-expanded="false">
               <span class="select-label"></span>
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -240,40 +144,33 @@
             <div class="select-options" role="listbox"></div>
           </div>
         </div>
+      </div>
+      <div class="row">
+        <input type="text" id="bgUrl" placeholder="__MSG_placeholderBgUrl__" data-i18n-placeholder="placeholderBgUrl">
+      </div>
+      <div class="row">
+          <div class="file-input-wrapper">
+              <label for="bgFile" class="file-input-label" data-i18n="buttonChooseFile">__MSG_buttonChooseFile__</label>
+              <input type="file" id="bgFile" accept="image/*, video/mp4, video/webm, video/ogg">
+              <div style="flex-grow: 1;"></div>
+              <button id="clearBg" data-i18n="buttonReset">__MSG_buttonReset__</button>
+          </div>
+      </div>
+      <div class="row">
+        <div class="label" data-i18n="labelBlur">__MSG_labelBlur__</div>
+        <input type="range" id="blurSlider" min="0" max="150" step="1">
+        <span id="blurValue" style="min-width: 3ch; text-align: right;">60</span>px
       </div>
       <div class="row">
         <div class="label" data-i18n="labelScaling">__MSG_labelScaling__</div>
         <div class="custom-select-wrapper">
-          <div class="custom-select" id="scalingSelector">
+          <div class="custom-select" id="bgScalingSelector">
             <button type="button" class="select-trigger" aria-haspopup="listbox" aria-expanded="false">
               <span class="select-label"></span>
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </button>
             <div class="select-options" role="listbox"></div>
           </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="row-input">
-          <div class="label" data-i18n="placeholderBgUrl">__MSG_placeholderBgUrl__</div>
-          <div class="input-group">
-            <input type="url" id="bgUrl" data-i18n-placeholder="placeholderBgUrl" placeholder="__MSG_placeholderBgUrl__">
-          </div>
-          <div class="input-actions">
-            <label class="status" for="bgFile">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 10.5L12 7l-3.5 3.5"></path><path d="M12 7v9"></path><path d="M20 21H4"></path></svg>
-              <span data-i18n="labelLocalFile">__MSG_labelLocalFile__</span>
-            </label>
-            <input type="file" id="bgFile" accept="image/*,video/*" hidden>
-            <button id="clearBg" data-i18n="buttonReset">__MSG_buttonReset__</button>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="label" data-i18n="labelBlur">__MSG_labelBlur__</div>
-        <div class="row-input">
-          <input type="range" min="0" max="120" id="blurSlider" class="slider">
-          <div class="status"><span id="blurValue">60</span>px</div>
         </div>
       </div>
     </div>
@@ -329,15 +226,15 @@
       <div class="row">
         <div class="label" data-i18n="labelFocusMode">__MSG_labelFocusMode__</div>
         <label class="switch" title="__MSG_tooltipFocusMode__" data-i18n-title="tooltipFocusMode">
-          <input type="checkbox" id="focusMode">
-          <span class="track"><span class="thumb"></span></span>
+            <input type="checkbox" id="focusMode">
+            <span class="track"><span class="thumb"></span></span>
         </label>
       </div>
       <div class="row">
         <div class="label" data-i18n="labelHideQuickSettings">__MSG_labelHideQuickSettings__</div>
         <label class="switch" title="__MSG_tooltipHideQuickSettings__" data-i18n-title="tooltipHideQuickSettings">
-          <input type="checkbox" id="hideQuickSettings">
-          <span class="track"><span class="thumb"></span></span>
+            <input type="checkbox" id="hideQuickSettings">
+            <span class="track"><span class="thumb"></span></span>
         </label>
       </div>
       <div class="row">
@@ -392,4 +289,3 @@
   <script src="popup.js"></script>
 </body>
 </html>
-

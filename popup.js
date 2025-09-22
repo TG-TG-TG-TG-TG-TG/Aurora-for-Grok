@@ -17,11 +17,9 @@ const DEFAULTS = {
 };
 
 const LOCAL_BG_KEY = 'customBgData';
-const GROK_WALLPAPER_URL = 'https://images.unsplash.com/photo-1526404079160-4be0d9c5fe5d?auto=format&fit=crop&w=2200&q=80';
 const BLUE_WALLPAPER_URL = 'https://img.freepik.com/free-photo/abstract-luxury-gradient-blue-background-smooth-dark-blue-with-black-vignette-studio-banner_1258-54581.jpg?semt=ais_hybrid&w=740&q=80';
 const MAX_FILE_SIZE_MB = 15;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
-
 const CHATGPT_SENTINEL = '__chatgpt__';
 
 const getMessage = (key, substitutions) => {
@@ -55,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   applyStaticLocalization();
 
-  // --- UI elements ---
+  // --- Get all UI elements ---
   const cbLegacy = document.getElementById('legacyComposer');
   const cbHideUsageLimit = document.getElementById('hideUsageLimit');
   const cbHideUpgradePromos = document.getElementById('hideUpgradePromos');
@@ -72,36 +70,40 @@ document.addEventListener('DOMContentLoaded', () => {
   const blurSlider = document.getElementById('blurSlider');
   const blurValue = document.getElementById('blurValue');
 
-  // --- Custom select helper ---
-  function createCustomSelect(containerId, options, storageKey, onChange) {
+  // --- Reusable Custom Select Functionality (from ChatGPT version) ---
+  function createCustomSelect(containerId, options, storageKey, onPresetChange) {
     const container = document.getElementById(containerId);
+    if (!container) return { update: () => {} };
     const trigger = container.querySelector('.select-trigger');
     const label = container.querySelector('.select-label');
     const optionsContainer = container.querySelector('.select-options');
+    const dotInTrigger = trigger.querySelector('.color-dot');
 
     const resolveLabel = (option) => option.labelKey ? getMessage(option.labelKey) : (option.label || option.value);
 
     function renderOptions(selectedValue) {
       optionsContainer.innerHTML = options
-        .filter((option) => !option.hidden)
-        .map((option) => {
-          const optionLabel = resolveLabel(option);
-          const isSelected = option.value === selectedValue ? 'true' : 'false';
-          return `
+        .filter(option => !option.hidden)
+        .map(option => {
+            const colorDotHtml = option.color ? `<span class="color-dot" style="background-color: ${option.color}; display: block;"></span>` : '';
+            const optionLabel = resolveLabel(option);
+            const isSelected = option.value === selectedValue ? 'true' : 'false';
+            return `
             <div class="select-option" role="option" data-value="${option.value}" aria-selected="${isSelected}">
+              ${colorDotHtml}
               <span class="option-label">${optionLabel}</span>
             </div>
-          `;
+            `;
         }).join('');
 
-      optionsContainer.querySelectorAll('.select-option').forEach((optionEl) => {
+      optionsContainer.querySelectorAll('.select-option').forEach(optionEl => {
         optionEl.addEventListener('click', () => {
           const newValue = optionEl.dataset.value;
           if (storageKey) {
             chrome.storage.sync.set({ [storageKey]: newValue });
           }
-          if (onChange) {
-            onChange(newValue);
+          if (onPresetChange) {
+            onPresetChange(newValue);
           }
           closeAllSelects();
         });
@@ -109,59 +111,75 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateSelectorState(value) {
-      const selectedOption = options.find((opt) => opt.value === value) || options[0];
-      label.textContent = resolveLabel(selectedOption);
-      renderOptions(selectedOption.value);
+      const selectedOption = options.find(opt => opt.value === value) || options[0];
+      const selectedLabel = resolveLabel(selectedOption);
+
+      if (dotInTrigger) {
+        if (selectedOption.color) {
+          dotInTrigger.style.backgroundColor = selectedOption.color;
+          dotInTrigger.style.display = 'block';
+        } else {
+          dotInTrigger.style.display = 'none';
+        }
+      }
+
+      label.textContent = selectedLabel;
+      renderOptions(value);
     }
 
-    trigger.addEventListener('click', (event) => {
-      event.stopPropagation();
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
       const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
       closeAllSelects();
-      trigger.setAttribute('aria-expanded', String(!isExpanded));
-      optionsContainer.style.display = isExpanded ? 'none' : 'block';
+      if (!isExpanded) {
+          container.classList.add('is-open');
+          trigger.setAttribute('aria-expanded', 'true');
+          optionsContainer.style.display = 'block';
+      }
     });
 
-    return {
-      update: updateSelectorState
-    };
+    return { update: updateSelectorState };
   }
 
   function closeAllSelects() {
-    document.querySelectorAll('.select-options').forEach((list) => {
-      list.style.display = 'none';
-    });
-    document.querySelectorAll('.select-trigger').forEach((btn) => {
-      btn.setAttribute('aria-expanded', 'false');
+    document.querySelectorAll('.custom-select').forEach(sel => {
+        sel.classList.remove('is-open');
+        const trigger = sel.querySelector('.select-trigger');
+        const optionsContainer = sel.querySelector('.select-options');
+        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        if (optionsContainer) optionsContainer.style.display = 'none';
     });
   }
-
   document.addEventListener('click', closeAllSelects);
 
+  // --- Initialize Custom Selects ---
   const bgPresetOptions = [
     { value: 'default', labelKey: 'bgPresetOptionDefault' },
     { value: 'chatgpt', labelKey: 'bgPresetOptionChatgpt' },
     { value: 'blue', labelKey: 'bgPresetOptionBlue' },
-    { value: 'custom', labelKey: 'bgPresetOptionCustom' }
+    { value: 'custom', labelKey: 'bgPresetOptionCustom', hidden: true }
   ];
-
-  const bgPresetSelect = createCustomSelect('presetSelector', bgPresetOptions, null, (value) => {
+  const bgPresetSelect = createCustomSelect('bgPreset', bgPresetOptions, null, (value) => {
+    let newUrl = '';
     if (value === 'default') {
-      chrome.storage.sync.set({ customBgUrl: '' });
+      newUrl = '';
     } else if (value === 'chatgpt') {
-      chrome.storage.sync.set({ customBgUrl: CHATGPT_SENTINEL });
+      newUrl = CHATGPT_SENTINEL;
     } else if (value === 'blue') {
-      chrome.storage.sync.set({ customBgUrl: BLUE_WALLPAPER_URL });
-    } else if (value === 'custom') {
-      setTimeout(() => tbBgUrl.focus(), 0);
+      newUrl = BLUE_WALLPAPER_URL;
+    }
+
+    if (value !== 'custom') {
+      chrome.storage.local.remove(LOCAL_BG_KEY);
+      chrome.storage.sync.set({ customBgUrl: newUrl });
     }
   });
 
-  const scalingOptions = [
+  const bgScalingOptions = [
     { value: 'contain', labelKey: 'bgScalingOptionContain' },
     { value: 'cover', labelKey: 'bgScalingOptionCover' }
   ];
-  const bgScalingSelect = createCustomSelect('scalingSelector', scalingOptions, 'backgroundScaling');
+  const bgScalingSelect = createCustomSelect('bgScalingSelector', bgScalingOptions, 'backgroundScaling');
 
   const themeOptions = [
     { value: 'auto', labelKey: 'themeOptionAuto' },
@@ -176,7 +194,16 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
   const appearanceSelect = createCustomSelect('appearanceSelector', appearanceOptions, 'appearance');
 
-  function updateUi(settings) {
+  // --- Function to update the UI based on current settings ---
+  async function updateUi(settings) {
+    if (settings.theme === 'auto') {
+      // Logic to detect system theme could be added here if needed
+      // For now, popup just reflects the 'auto' setting
+      document.documentElement.classList.remove('theme-light');
+    } else {
+      document.documentElement.classList.toggle('theme-light', settings.theme === 'light');
+    }
+
     cbLegacy.checked = !!settings.legacyComposer;
     cbHideUsageLimit.checked = !!settings.hideUsageLimit;
     cbHideUpgradePromos.checked = !!settings.hideUpgradePromos;
@@ -186,6 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cbShowInNewChatsOnly.checked = !!settings.showInNewChatsOnly;
     cbHideImaginePromo.checked = !!settings.hideImaginePromo;
     cbHideLeftNav.checked = !!settings.hideLeftNav;
+
     blurSlider.value = settings.backgroundBlur;
     blurValue.textContent = settings.backgroundBlur;
 
@@ -205,7 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
       tbBgUrl.disabled = true;
     } else if (url === BLUE_WALLPAPER_URL) {
       bgPresetSelect.update('blue');
-      tbBgUrl.value = url;
     } else if (url === '__local__') {
       bgPresetSelect.update('custom');
       tbBgUrl.value = getMessage('statusLocalFileInUse');
@@ -216,18 +243,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // --- Initial Load ---
   chrome.storage.sync.get(DEFAULTS, updateUi);
 
-  cbLegacy.addEventListener('change', () => chrome.storage.sync.set({ legacyComposer: cbLegacy.checked }));
-  cbHideUsageLimit.addEventListener('change', () => chrome.storage.sync.set({ hideUsageLimit: cbHideUsageLimit.checked }));
-  cbHideUpgradePromos.addEventListener('change', () => chrome.storage.sync.set({ hideUpgradePromos: cbHideUpgradePromos.checked }));
-  cbDisableAnimations.addEventListener('change', () => chrome.storage.sync.set({ disableAnimations: cbDisableAnimations.checked }));
-  cbFocusMode.addEventListener('change', () => chrome.storage.sync.set({ focusMode: cbFocusMode.checked }));
-  cbHideQuickSettings.addEventListener('change', () => chrome.storage.sync.set({ hideQuickSettings: cbHideQuickSettings.checked }));
-  cbShowInNewChatsOnly.addEventListener('change', () => chrome.storage.sync.set({ showInNewChatsOnly: cbShowInNewChatsOnly.checked }));
-  cbHideImaginePromo.addEventListener('change', () => chrome.storage.sync.set({ hideImaginePromo: cbHideImaginePromo.checked }));
-  cbHideLeftNav.addEventListener('change', () => chrome.storage.sync.set({ hideLeftNav: cbHideLeftNav.checked }));
+  // --- Event Listeners for Toggles ---
+  const addCheckboxListener = (element, key) => {
+    if (element) {
+      element.addEventListener('change', () => chrome.storage.sync.set({ [key]: element.checked }));
+    }
+  };
 
+  addCheckboxListener(cbLegacy, 'legacyComposer');
+  addCheckboxListener(cbHideUsageLimit, 'hideUsageLimit');
+  addCheckboxListener(cbHideUpgradePromos, 'hideUpgradePromos');
+  addCheckboxListener(cbDisableAnimations, 'disableAnimations');
+  addCheckboxListener(cbFocusMode, 'focusMode');
+  addCheckboxListener(cbHideQuickSettings, 'hideQuickSettings');
+  addCheckboxListener(cbShowInNewChatsOnly, 'showInNewChatsOnly');
+  addCheckboxListener(cbHideImaginePromo, 'hideImaginePromo');
+  addCheckboxListener(cbHideLeftNav, 'hideLeftNav');
+
+  // --- Event Listeners for Custom Background ---
   blurSlider.addEventListener('input', () => {
     blurValue.textContent = blurSlider.value;
   });
@@ -237,15 +273,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   tbBgUrl.addEventListener('change', () => {
     const urlValue = tbBgUrl.value.trim();
-    if (!urlValue) {
-      chrome.storage.sync.set({ customBgUrl: '' });
-      chrome.storage.local.remove(LOCAL_BG_KEY);
-      return;
-    }
+    const newSettings = { customBgUrl: urlValue };
     if (urlValue !== '__local__') {
       chrome.storage.local.remove(LOCAL_BG_KEY);
     }
-    chrome.storage.sync.set({ customBgUrl: urlValue });
+    chrome.storage.sync.set(newSettings);
   });
 
   fileBg.addEventListener('change', (event) => {
@@ -278,15 +310,10 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.local.remove(LOCAL_BG_KEY);
   });
 
+  // --- Listen for changes and update UI ---
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'sync' || area === 'local') {
       chrome.storage.sync.get(DEFAULTS, updateUi);
     }
   });
 });
-
-
-
-
-
-

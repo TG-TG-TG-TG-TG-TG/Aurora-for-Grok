@@ -896,7 +896,11 @@ html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) div.bg-bac
   backdrop-filter: blur(18px) saturate(150%);
 }
 
-html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) div.bg-background.rounded-full > button:hover,
+html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) div.bg-background.rounded-full > button:focus-visible {
+  background-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+
 html.grok-ambient-on:not(.grok-legacy-composer) div.relative.rounded-3xl.w-full.h-full.overflow-hidden.backdrop-blur-lg.border.border-border-l1.bg-input.max-w-\[90%\] {
   background: rgba(12, 18, 32, 0.5) !important;
   border: 1px solid rgba(255, 255, 255, 0.18) !important;
@@ -920,11 +924,6 @@ html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) div.relati
 html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) div.relative.rounded-3xl.w-full.h-full.overflow-hidden.backdrop-blur-lg.border.border-border-l1.bg-input.max-w-\[90%\] > .flex {
   background: transparent !important;
 }
-html.grok-ambient-on.grok-appearance-clear:not(.grok-legacy-composer) div.bg-background.rounded-full > button:focus-visible {
-  background-color: rgba(255, 255, 255, 0.18) !important;
-}
-
-
 html.grok-ambient-on:not(.grok-legacy-composer) thead.sticky {
   background-color: transparent !important;
   box-shadow: none !important;
@@ -1145,3 +1144,88 @@ html.grok-ambient-on.grok-appearance-clear.grok-legacy-composer div.relative.rou
 html.grok-ambient-on.grok-appearance-clear.grok-legacy-composer div.relative.rounded-3xl.w-full.h-full.overflow-hidden.backdrop-blur-lg.border.border-border-l1.bg-input.max-w-\[90%\] > .flex {
   background: transparent !important;
 }
+
+/* --- Comprehensive Light Mode Overrides --- */
+
+/* 1. Base Background, Text, & Icon Color */
+html.grok-light-mode.grok-ambient-on,
+html.grok-light-mode.grok-ambient-on body,
+html.grok-light-mode.grok-ambient-on [class*="text-"] {
+  color: #1d1d1f !important;
+}
+
+html.grok-light-mode.grok-ambient-on svg {
+  color: #1d1d1f !important;
+}
+
+html.grok-light-mode #grok-ambient-bg img,
+html.grok-light-mode #grok-ambient-bg video {
+  filter: blur(var(--grok-bg-blur-radius, 60px)) brightness(1.0) saturate(0.9);
+  opacity: 0.85;
+}
+
+html.grok-light-mode #grok-ambient-bg .overlay {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.7));
+}
+
+html.grok-light-mode #grok-ambient-bg .haze {
+    background: radial-gradient(circle at 50% 30%, rgba(100, 120, 200, 0.1), transparent 60%);
+    mix-blend-mode: normal;
+}
+
+/* 2. Main Composer / Query Bar */
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar {
+  background: rgba(255, 255, 255, 0.7) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+}
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar::before {
+    background: none !important;
+}
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar textarea::placeholder {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 3. General Glass Surfaces (Dialogs, Menus, etc.) */
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) :is(
+  .bg-surface-base, .bg-surface-l1, .bg-surface-l2, .bg-surface-l3, .bg-surface-raise, .bg-dialog,
+  [data-radix-popper-content-wrapper] [data-radix-menu-content],
+  [role="dialog"][class*="bg-background"],
+  ul.flex.flex-col-reverse
+) {
+  background-color: rgba(255, 255, 255, 0.75) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12) !important;
+}
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) :is(.bg-surface-base, .bg-surface-l1, .bg-surface-l2)::before {
+    background: none !important;
+}
+
+/* 4. Sticky Header */
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) :is(.sticky.top-0.bg-gradient-to-b.from-surface-l1,
+  .sticky.top-0.bg-gradient-to-b.dark\:from-surface-inset) {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5) 78%, rgba(255, 255, 255, 0)) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 5. Quick Settings UI */
+html.grok-light-mode #grok-qs-btn {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+html.grok-light-mode #grok-qs-btn svg { color: #1d1d1f !important; }
+
+html.grok-light-mode #grok-qs-panel {
+  background: rgba(255, 255, 255, 0.75) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2) !important;
+}
+
+html.grok-light-mode #grok-qs-panel .qs-row:hover { background: rgba(0, 0, 0, 0.05); }
+html.grok-light-mode #grok-qs-panel .track { background: rgba(0, 0, 0, 0.1); }

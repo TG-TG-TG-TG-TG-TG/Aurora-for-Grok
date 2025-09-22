@@ -80,4 +80,30 @@ html.grok-ambient-on:not(.grok-legacy-composer) .bg-sidebar > * {
 
 
 
+/* --- Sidebar Light Mode Overrides --- */
 
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) :is(nav[role="navigation"], aside)::before {
+  background: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Ensure text and icons inside the sidebar are readable */
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) :is(nav[role="navigation"], aside) :is(span, div, p, a, h1, h2, h3, button) {
+    color: #1d1d1f !important;
+}
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) :is(nav[role="navigation"], aside) svg {
+    color: #1d1d1f !important;
+}
+
+/* Style for the search bar inside the sidebar */
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) :is(nav[role="navigation"], aside) input[type="text"] {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    color: #1d1d1f !important;
+}
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) :is(nav[role="navigation"], aside) input[type="text"]::placeholder {
+    color: rgba(0, 0, 0, 0.5) !important;
+}
