@@ -4,6 +4,12 @@ Wrap xAI's Grok interface in a soft, glassy aurora background with quick control
 
 ---
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b3236272-b015-4e15-922c-181f810620eb" width="70%">
+</p>
+
+---
+
 ## Highlights
 
 - Ambient aurora layer - blurred gradient glow that sits behind Grok without breaking the layout
