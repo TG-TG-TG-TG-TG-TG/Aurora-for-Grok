@@ -8,6 +8,16 @@ Wrap xAI's Grok interface in a soft, glassy aurora background with quick control
   <img src="https://github.com/user-attachments/assets/b3236272-b015-4e15-922c-181f810620eb" width="70%">
 </p>
 
+<h2 align="center">⚠️ Work in Progress ⚠️</h2>
+
+<p align="center">
+This extension is still under active development.<br>
+Some features are unfinished and bugs may occur.<br><br>
+💡 If you’d like to help this project grow, please report any issues directly on <a href="https://github.com/TG-TG-TG-TG-TG-TG/Aurora-for-Grok/issues">GitHub Issues</a>.<br><br>
+🙏 Thanks for supporting us!
+</p>
+
+
 ---
 
 ## Highlights
