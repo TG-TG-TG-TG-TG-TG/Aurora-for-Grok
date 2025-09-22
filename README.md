@@ -1,4 +1,4 @@
-# Aurora for Grok
+# Aurora for Grok V1.1
 
 Wrap xAI's Grok interface in a soft, glassy aurora background with quick controls to keep the chat canvas calm and clutter-free. Aurora is an independent community project and is not affiliated with xAI.
 
