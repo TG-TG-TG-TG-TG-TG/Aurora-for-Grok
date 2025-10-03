@@ -1,3 +1,4 @@
+// content.js — Modernized for Aurora for Grok
 (() => {
   const getAssetUrl = (relativePath) => (typeof chrome !== 'undefined' && chrome?.runtime?.getURL) ? chrome.runtime.getURL(relativePath) : relativePath;
 
@@ -11,12 +12,9 @@
   const ANIMATIONS_DISABLED_CLASS = 'grok-animations-disabled';
   const FOCUS_CLASS = 'grok-focus-mode-on';
   const LOCAL_BG_KEY = 'customBgData';
-  const DEFAULT_BACKGROUND_IMAGE = getAssetUrl('Aurora/grok-4.webp');
-  const CHATGPT_BACKGROUND_IMAGE = getAssetUrl('Aurora/Chatgpt.webp');
   const CHATGPT_SENTINEL = '__chatgpt__';
   const CHATGPT_MODE_CLASS = 'grok-chatgpt-bg';
   const APPEARANCE_CLEAR_CLASS = 'grok-appearance-clear';
-  const APPEARANCE_DIMMED_CLASS = 'grok-appearance-dimmed';
 
   const HIDE_USAGE_CLASS = 'grok-hide-usage-notice';
   const HIDE_UPGRADE_CLASS = 'grok-hide-upgrade-promo';
@@ -29,50 +27,22 @@
   const USAGE_SELECTORS = ['[role="alert"]', '[aria-live]', 'section', 'aside', 'div[data-testid]', 'div[role="dialog"]'];
   const UPGRADE_SELECTORS = ['[data-testid*="upgrade"]', '[role="dialog"]', 'section', 'aside', 'a', 'button'];
   const IMAGINE_SELECTORS = ['section', 'article', 'div[data-testid]', 'a'];
+  
+  const DEFAULT_BACKGROUND_IMAGE = getAssetUrl('Aurora/grok-4.webp');
+  const CHATGPT_BACKGROUND_IMAGE = getAssetUrl('Aurora/Chatgpt.webp');
 
-  const DEFAULTS = {
-    legacyComposer: false,
-    theme: 'auto',
-    hideUsageLimit: false,
-    hideUpgradePromos: false,
-    disableAnimations: false,
-    focusMode: false,
-    hideQuickSettings: false,
-    customBgUrl: '',
-    backgroundBlur: '60',
-    backgroundScaling: 'contain',
-    appearance: 'dimmed',
-    showInNewChatsOnly: false,
-    hideImaginePromo: false,
-    hideLeftNav: false
-  };
-
-  const QUICK_SETTINGS_CONFIG = [
-    {
-      titleKey: 'quickSettingsSectionVisibility',
-      items: [
-        { setting: 'focusMode', labelKey: 'quickSettingsLabelFocusMode' },
-        { setting: 'hideUpgradePromos', labelKey: 'quickSettingsLabelHideUpgradePromos' },
-        { setting: 'hideImaginePromo', labelKey: 'quickSettingsLabelHideImaginePromo' },
-        { setting: 'hideUsageLimit', labelKey: 'quickSettingsLabelHideUsageLimit' }
-      ]
-    }
-  ];
-
-  let settings = { ...DEFAULTS };
-  let docClickHandler = null;
+  let settings = {};
   let observersStarted = false;
-  let observersInitScheduled = false;
 
   const getMessage = (key) => {
-    if (typeof chrome !== 'undefined' && chrome?.i18n?.getMessage) {
-      const text = chrome.i18n.getMessage(key);
-      if (text) return text;
-    }
+    try {
+      if (typeof chrome !== 'undefined' && chrome?.i18n?.getMessage) {
+        const text = chrome.i18n.getMessage(key);
+        if (text) return text;
+      }
+    } catch (e) {}
     return key;
   };
-
-  const isVideoUrl = (url) => /\.(mp4|webm|m4v|mov)$/i.test(url);
 
   const isChatPath = () => {
     const path = location.pathname || '/';
@@ -80,22 +50,13 @@
     return /\/(chat|thread|conversation|c)\b/i.test(path);
   };
 
-  const shouldShow = () => {
-    if (settings.showInNewChatsOnly) {
-      return !isChatPath();
-    }
-    return true;
-  };
+  const shouldShow = () => !settings.showInNewChatsOnly || !isChatPath();
 
   function ensureAppOnTop() {
     const app = document.querySelector('#root, main, [data-testid*="app"], body > div:first-child');
-    if (!app) return;
-    const styles = window.getComputedStyle(app);
-    if (styles.position === 'static') {
-      app.style.position = 'relative';
-    }
-    if (!app.style.zIndex || Number.parseInt(app.style.zIndex, 10) < 0) {
-      app.style.zIndex = '0';
+    if (app) {
+      if (getComputedStyle(app).position === 'static') app.style.position = 'relative';
+      if (!app.style.zIndex || parseInt(app.style.zIndex) < 0) app.style.zIndex = '0';
     }
   }
 
@@ -103,21 +64,113 @@
     const wrap = document.createElement('div');
     wrap.id = ID;
     wrap.setAttribute('aria-hidden', 'true');
-    wrap.innerHTML = `
+    const createLayerContent = () => `
+      <div class="animated-bg">
+        <div class="blob"></div><div class="blob"></div><div class="blob"></div>
+      </div>
       <video playsinline autoplay muted loop></video>
       <picture>
         <source type="image/webp" srcset="">
         <img alt="" aria-hidden="true" loading="eager" sizes="100vw" src="">
-      </picture>
+      </picture>`;
+    wrap.innerHTML = `
+      <div class="media-layer active" data-layer-id="a">${createLayerContent()}</div>
+      <div class="media-layer" data-layer-id="b">${createLayerContent()}</div>
       <div class="haze"></div>
-      <div class="overlay"></div>
-    `;
+      <div class="overlay"></div>`;
     return wrap;
+  }
+  
+  let activeLayerId = 'a';
+  let isTransitioning = false;
+
+  function updateBackgroundImage() {
+    const bgNode = document.getElementById(ID);
+    if (!bgNode || isTransitioning) return;
+
+    const url = (settings.customBgUrl || '').trim();
+    document.documentElement.classList.toggle(CHATGPT_MODE_CLASS, url === CHATGPT_SENTINEL);
+
+    const inactiveLayerId = activeLayerId === 'a' ? 'b' : 'a';
+    const activeLayer = bgNode.querySelector(`.media-layer[data-layer-id="${activeLayerId}"]`);
+    const inactiveLayer = bgNode.querySelector(`.media-layer[data-layer-id="${inactiveLayerId}"]`);
+
+    if (!activeLayer || !inactiveLayer) return;
+
+    inactiveLayer.classList.remove('gpt5-active');
+
+    const inactiveImg = inactiveLayer.querySelector('img');
+    const inactiveSource = inactiveLayer.querySelector('source');
+    const inactiveVideo = inactiveLayer.querySelector('video');
+
+    const transitionToInactive = () => {
+      isTransitioning = true;
+      inactiveLayer.classList.add('active');
+      activeLayer.classList.remove('active');
+      activeLayerId = inactiveLayerId;
+      setTimeout(() => { isTransitioning = false; }, 800);
+    };
+
+    if (url === '__gpt5_animated__') {
+      inactiveLayer.classList.add('gpt5-active');
+      transitionToInactive();
+      return;
+    }
+
+    const applyMedia = (mediaUrl) => {
+      const isVideo = /\.(mp4|webm|m4v|mov)$/i.test(mediaUrl) || mediaUrl.startsWith('data:video');
+      inactiveImg.style.display = isVideo ? 'none' : 'block';
+      inactiveVideo.style.display = isVideo ? 'block' : 'none';
+      const mediaEl = isVideo ? inactiveVideo : inactiveImg;
+      const eventType = isVideo ? 'loadeddata' : 'load';
+      const onMediaReady = () => {
+        transitionToInactive();
+        mediaEl.removeEventListener(eventType, onMediaReady);
+        mediaEl.removeEventListener('error', onMediaReady);
+      };
+      mediaEl.addEventListener(eventType, onMediaReady, { once: true });
+      mediaEl.addEventListener('error', onMediaReady, { once: true });
+      if (isVideo) {
+        inactiveVideo.src = mediaUrl;
+        inactiveVideo.load();
+        inactiveVideo.play().catch(()=>{});
+        inactiveImg.src = ''; inactiveImg.srcset = ''; inactiveSource.srcset = '';
+      } else {
+        inactiveImg.src = mediaUrl; inactiveImg.srcset = ''; inactiveSource.srcset = '';
+        inactiveVideo.src = '';
+      }
+    };
+    
+    const applyDefault = (defaultUrl = DEFAULT_BACKGROUND_IMAGE) => {
+        inactiveVideo.style.display = 'none';
+        inactiveImg.style.display = 'block';
+        const onMediaReady = () => {
+            transitionToInactive();
+            inactiveImg.removeEventListener('load', onMediaReady);
+            inactiveImg.removeEventListener('error', onMediaReady);
+        };
+        inactiveImg.addEventListener('load', onMediaReady, { once: true });
+        inactiveImg.addEventListener('error', onMediaReady, { once: true });
+        inactiveImg.src = defaultUrl;
+        inactiveImg.srcset = defaultUrl;
+        inactiveSource.srcset = defaultUrl;
+    };
+    
+    if (!url) {
+      applyDefault();
+    } else if (url === CHATGPT_SENTINEL) {
+      applyDefault(CHATGPT_BACKGROUND_IMAGE);
+    } else if (url === '__local__') {
+      chrome.storage.local.get([LOCAL_BG_KEY], (res) => {
+        if (!res?.[LOCAL_BG_KEY]) applyDefault();
+        else applyMedia(res[LOCAL_BG_KEY]);
+      });
+    } else {
+      applyMedia(url);
+    }
   }
 
   function applyCustomStyles() {
-    const blurValue = Math.max(0, Math.min(200, Number.parseInt(settings.backgroundBlur, 10) || Number.parseInt(DEFAULTS.backgroundBlur, 10)));
-    const scaling = settings.backgroundScaling || DEFAULTS.backgroundScaling;
     let styleNode = document.getElementById(STYLE_ID);
     if (!styleNode) {
       styleNode = document.createElement('style');
@@ -126,319 +179,154 @@
     }
     styleNode.textContent = `
       html.${HTML_CLASS} {
-        --grok-bg-blur-radius: ${blurValue}px;
-        --grok-bg-scaling: ${scaling};
+        --grok-bg-blur-radius: ${settings.backgroundBlur || '60'}px;
+        --grok-bg-scaling: ${settings.backgroundScaling || 'cover'};
+      }
+      #grok-ambient-bg .media-layer {
+        opacity: 0;
+        transition: opacity 750ms ease-in-out;
+      }
+      #grok-ambient-bg .media-layer.active {
+        opacity: 1;
+      }
+      #grok-ambient-bg .media-layer.gpt5-active {
+        opacity: 1;
+        transition: none;
       }
     `;
   }
 
-  function applyMediaSources({ imageSrc = '', videoSrc = '' }) {
-    const bgNode = document.getElementById(ID);
-    if (!bgNode) return;
-    const picture = bgNode.querySelector('picture');
-    const img = picture?.querySelector('img');
-    const source = picture?.querySelector('source');
-    const video = bgNode.querySelector('video');
-    if (!picture || !img || !source || !video) return;
-
-    if (videoSrc) {
-      picture.style.display = 'none';
-      video.style.display = 'block';
-      if (video.src !== videoSrc) {
-        video.src = videoSrc;
-        video.load();
-      }
-    } else {
-      if (video.src) {
-        video.removeAttribute('src');
-        video.load();
-      }
-      video.style.display = 'none';
-      picture.style.display = 'block';
-      if (source.srcset !== imageSrc) {
-        source.srcset = imageSrc;
-      }
-      if (img.src !== imageSrc) {
-        img.src = imageSrc;
-      }
-    }
-  }
-
-  function updateBackgroundImage() {
-    const url = (settings.customBgUrl || '').trim();
-    const root = document.documentElement;
-    const isChatgptPreset = url === CHATGPT_SENTINEL;
-    const shouldApplyChatgptClass = isChatgptPreset && root.classList.contains(HTML_CLASS);
-    root.classList.toggle(CHATGPT_MODE_CLASS, shouldApplyChatgptClass);
-
-    if (!url) {
-      applyMediaSources({ imageSrc: DEFAULT_BACKGROUND_IMAGE });
-      return;
-    }
-
-    if (isChatgptPreset) {
-      applyMediaSources({ imageSrc: CHATGPT_BACKGROUND_IMAGE });
-      return;
-    }
-
-    if (url === '__local__') {
-      if (typeof chrome === 'undefined' || !chrome?.storage?.local) {
-        applyMediaSources({ imageSrc: DEFAULT_BACKGROUND_IMAGE });
-        return;
-      }
-      chrome.storage.local.get([LOCAL_BG_KEY], (res) => {
-        if (chrome.runtime?.lastError) return;
-        const dataUrl = res?.[LOCAL_BG_KEY];
-        if (!dataUrl) {
-          applyMediaSources({ imageSrc: DEFAULT_BACKGROUND_IMAGE });
-          return;
-        }
-        if (dataUrl.startsWith('data:video')) {
-          applyMediaSources({ videoSrc: dataUrl });
-        } else {
-          applyMediaSources({ imageSrc: dataUrl });
-        }
-      });
-      return;
-    }
-
-    if (isVideoUrl(url)) {
-      applyMediaSources({ videoSrc: url });
-    } else {
-      applyMediaSources({ imageSrc: url });
-    }
-  }
-
-  function findElementsByText(matchers, selectors) {
-    const loweredMatchers = matchers.map((m) => m.toLowerCase());
-    const seen = new Set();
+  const findElementsByText = (matchers, selectors) => {
+    const loweredMatchers = matchers.map(m => m.toLowerCase());
     const results = [];
-    selectors.forEach((selector) => {
-      document.querySelectorAll(selector).forEach((node) => {
-        // --- FIX: Exclude the extension's own UI from being hidden ---
-        if (node.closest(`#${QS_PANEL_ID}, #${QS_BUTTON_ID}`)) {
-          return; // Skip this node if it's part of the Quick Settings UI
-        }
-        // --- End of FIX ---
-
-        if (seen.has(node)) return;
-        const text = (node.textContent || '').toLowerCase();
-        if (!text) return;
-        if (loweredMatchers.some((matcher) => text.includes(matcher))) {
-          seen.add(node);
+    selectors.forEach(selector => {
+      document.querySelectorAll(selector).forEach(node => {
+        if (node.closest(`#${QS_PANEL_ID}, #${QS_BUTTON_ID}`)) return;
+        if ((node.textContent || '').toLowerCase().includes(...loweredMatchers)) {
           results.push(node);
         }
       });
     });
-    return { matches: results, matchSet: new Set(results) };
-  }
-
-  function applyHideClass(matchers, selectors, className, shouldHide) {
-    const { matches, matchSet } = findElementsByText(matchers, selectors);
-    document.querySelectorAll(`.${className}`).forEach((node) => {
-      if (!shouldHide || !matchSet.has(node)) {
-        node.classList.remove(className);
-      }
-    });
+    return [...new Set(results)];
+  };
+  
+  const applyHideClass = (matchers, selectors, className, shouldHide) => {
+    document.querySelectorAll(`.${className}`).forEach(node => node.classList.remove(className));
     if (shouldHide) {
-      matches.forEach((node) => node.classList.add(className));
+      findElementsByText(matchers, selectors).forEach(node => node.classList.add(className));
     }
-  }
+  };
 
-  function manageUsageLimitNotices() {
-    applyHideClass(USAGE_LIMIT_MATCHERS, USAGE_SELECTORS, HIDE_USAGE_CLASS, !!settings.hideUsageLimit);
-  }
+  const manageUsageLimitNotices = () => applyHideClass(USAGE_LIMIT_MATCHERS, USAGE_SELECTORS, HIDE_USAGE_CLASS, settings.hideUsageLimit);
+  const manageUpgradePromos = () => applyHideClass(UPGRADE_PROMO_MATCHERS, UPGRADE_SELECTORS, HIDE_UPGRADE_CLASS, settings.hideUpgradePromos);
+  const manageImaginePromo = () => applyHideClass(IMAGINE_PROMO_MATCHERS, IMAGINE_SELECTORS, HIDE_IMAGINE_CLASS, settings.hideImaginePromo);
 
-  function manageUpgradePromos() {
-    applyHideClass(UPGRADE_PROMO_MATCHERS, UPGRADE_SELECTORS, HIDE_UPGRADE_CLASS, !!settings.hideUpgradePromos);
-  }
+  function manageQuickSettingsUI() {
+    let btn = document.getElementById(QS_BUTTON_ID);
+    let panel = document.getElementById(QS_PANEL_ID);
 
-  function manageImaginePromo() {
-    applyHideClass(IMAGINE_PROMO_MATCHERS, IMAGINE_SELECTORS, HIDE_IMAGINE_CLASS, !!settings.hideImaginePromo);
-  }
+    const shouldRender = shouldShow() && !settings.hideQuickSettings;
 
-  function renderQuickSettingsState() {
-    const panel = document.getElementById(QS_PANEL_ID);
-    if (!panel) return;
-    QUICK_SETTINGS_CONFIG.forEach((section) => {
-      section.items.forEach((item) => {
-        const input = panel.querySelector(`input[data-setting="${item.setting}"]`);
-        if (input) {
-          input.checked = !!settings[item.setting];
-        }
-      });
-    });
-  }
-
-  function populateQuickSettings(panel) {
-    panel.innerHTML = '';
-    QUICK_SETTINGS_CONFIG.forEach((section) => {
-      const title = document.createElement('div');
-      title.className = 'qs-section-title';
-      title.textContent = getMessage(section.titleKey);
-      panel.appendChild(title);
-
-      section.items.forEach((item) => {
-        const row = document.createElement('div');
-        row.className = 'qs-row';
-
-        const labelEl = document.createElement('label');
-        labelEl.className = 'qs-label';
-        const inputId = `qs-${item.setting}`;
-        labelEl.setAttribute('for', inputId);
-        labelEl.textContent = getMessage(item.labelKey);
-
-        const switchWrap = document.createElement('label');
-        switchWrap.className = 'switch';
-
-        const input = document.createElement('input');
-        input.type = 'checkbox';
-        input.id = inputId;
-        input.dataset.setting = item.setting;
-
-        const track = document.createElement('span');
-        track.className = 'track';
-
-        const thumb = document.createElement('span');
-        thumb.className = 'thumb';
-        track.appendChild(thumb);
-        
-        switchWrap.append(input, track);
-
-        input.addEventListener('change', () => {
-          const next = !!input.checked;
-          if (chrome?.storage?.sync) {
-            chrome.storage.sync.set({ [item.setting]: next });
-          } else {
-            settings[item.setting] = next;
-            applyAllSettings();
-            renderQuickSettingsState();
-          }
-        });
-
-        row.append(labelEl, switchWrap);
-        panel.appendChild(row);
-      });
-    });
-    renderQuickSettingsState();
-  }
-
-  function buildQuickSettings() {
-    if (document.getElementById(QS_BUTTON_ID) || !document.body) return;
-
-    const btn = document.createElement('button');
-    btn.id = QS_BUTTON_ID;
-    btn.type = 'button';
-    btn.title = getMessage('quickSettingsButtonTitle');
-    btn.setAttribute('aria-label', getMessage('quickSettingsButtonTitle'));
-    
-    btn.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5A3.5 3.5 0 0 1 15.5 12A3.5 3.5 0 0 1 12 15.5M19.43 12.98C19.47 12.65 19.5 12.33 19.5 12S19.47 11.35 19.43 11L21.54 9.37C21.73 9.22 21.78 8.95 21.66 8.73L19.66 5.27C19.54 5.05 19.27 4.96 19.05 5.05L16.56 6.05C16.04 5.66 15.5 5.32 14.87 5.07L14.5 2.42C14.46 2.18 14.25 2 14 2H10C9.75 2 9.54 2.18 9.5 2.42L9.13 5.07C8.5 5.32 7.96 5.66 7.44 6.05L4.95 5.05C4.73 4.96 4.46 5.05 4.34 5.27L2.34 8.73C2.21 8.95 2.27 9.22 2.46 9.37L4.57 11C4.53 11.35 4.5 11.67 4.5 12S4.53 12.65 4.57 12.98L2.46 14.63C2.27 14.78 2.21 15.05 2.34 15.27L4.34 18.73C4.46 18.95 4.73 19.04 4.95 18.95L7.44 17.94C7.96 18.34 8.5 18.68 9.13 18.93L9.5 21.58C9.54 21.82 9.75 22 10 22H14C14.25 22 14.46 21.82 14.5 21.58L14.87 18.93C15.5 18.68 16.04 18.34 16.56 17.94L19.05 18.95C19.27 19.04 19.54 18.95 19.66 18.73L21.66 15.27C21.78 15.05 21.73 14.78 21.54 14.63L19.43 12.98Z"></path>
-      </svg>
-    `;
-
-    const panel = document.createElement('div');
-    panel.id = QS_PANEL_ID;
-    panel.setAttribute('role', 'dialog');
-    panel.setAttribute('aria-hidden', 'true');
-    panel.setAttribute('aria-label', getMessage('quickSettingsButtonTitle'));
-    populateQuickSettings(panel);
-
-    const closePanel = () => {
-      panel.classList.remove('active');
-      panel.setAttribute('aria-hidden', 'true');
-    };
-
-    btn.addEventListener('click', (event) => {
-      event.stopPropagation();
-      const willOpen = !panel.classList.contains('active');
-      if (willOpen) {
-        panel.classList.add('active');
-        panel.setAttribute('aria-hidden', 'false');
-      } else {
-        closePanel();
-      }
-    });
-
-    panel.addEventListener('click', (event) => {
-      event.stopPropagation();
-    });
-
-    if (!docClickHandler) {
-      docClickHandler = (event) => {
-        const target = event.target;
-        if (!panel.contains(target) && target !== btn) {
-          closePanel();
-        }
-      };
-      document.addEventListener('click', docClickHandler);
-    }
-
-    document.body.append(btn, panel);
-  }
-
-  function destroyQuickSettings() {
-    const btn = document.getElementById(QS_BUTTON_ID);
-    const panel = document.getElementById(QS_PANEL_ID);
-    if (panel) panel.remove();
-    if (btn) btn.remove();
-    if (docClickHandler) {
-      document.removeEventListener('click', docClickHandler);
-      docClickHandler = null;
-    }
-  }
-
-  function manageQuickSettingsUI(show) {
-    if (!show || settings.hideQuickSettings) {
-      destroyQuickSettings();
+    if (!shouldRender) {
+      if (btn) btn.remove();
+      if (panel) panel.remove();
       return;
     }
-    buildQuickSettings();
-    renderQuickSettingsState();
+
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.id = QS_BUTTON_ID;
+      btn.title = getMessage('quickSettingsButtonTitle');
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5A3.5 3.5 0 0 1 15.5 12A3.5 3.5 0 0 1 12 15.5M19.43 12.98C19.47 12.65 19.5 12.33 19.5 12S19.47 11.35 19.43 11L21.54 9.37C21.73 9.22 21.78 8.95 21.66 8.73L19.66 5.27C19.54 5.05 19.27 4.96 19.05 5.05L16.56 6.05C16.04 5.66 15.5 5.32 14.87 5.07L14.5 2.42C14.46 2.18 14.25 2 14 2H10C9.75 2 9.54 2.18 9.5 2.42L9.13 5.07C8.5 5.32 7.96 5.66 7.44 6.05L4.95 5.05C4.73 4.96 4.46 5.05 4.34 5.27L2.34 8.73C2.21 8.95 2.27 9.22 2.46 9.37L4.57 11C4.53 11.35 4.5 11.67 4.5 12S4.53 12.65 4.57 12.98L2.46 14.63C2.27 14.78 2.21 15.05 2.34 15.27L4.34 18.73C4.46 18.95 4.73 19.04 4.95 18.95L7.44 17.94C7.96 18.34 8.5 18.68 9.13 18.93L9.5 21.58C9.54 21.82 9.75 22 10 22H14C14.25 22 14.46 21.82 14.5 21.58L14.87 18.93C15.5 18.68 16.04 18.34 16.56 17.94L19.05 18.95C19.27 19.04 19.54 18.95 19.66 18.73L21.66 15.27C21.78 15.05 21.73 14.78 21.54 14.63L19.43 12.98Z"></path></svg>`;
+      document.body.appendChild(btn);
+      
+      panel = document.createElement('div');
+      panel.id = QS_PANEL_ID;
+      document.body.appendChild(panel);
+      panel.setAttribute('data-state', 'closed');
+      
+      panel.addEventListener('animationend', (e) => {
+        if (e.animationName === 'qs-panel-close' && panel.getAttribute('data-state') === 'closing') {
+          panel.setAttribute('data-state', 'closed');
+        }
+      });
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const state = panel.getAttribute('data-state');
+        if (state === 'closed') panel.setAttribute('data-state', 'open');
+        else if (state === 'open') panel.setAttribute('data-state', 'closing');
+      });
+      document.addEventListener('click', (e) => {
+        if (panel.getAttribute('data-state') === 'open' && !panel.contains(e.target)) {
+          panel.setAttribute('data-state', 'closing');
+        }
+      });
+    }
+
+    const toggleConfig = [
+      { key: 'focusMode', labelKey: 'quickSettingsLabelFocusMode' },
+      { key: 'hideUpgradePromos', labelKey: 'quickSettingsLabelHideUpgradePromos' },
+      { key: 'hideImaginePromo', labelKey: 'quickSettingsLabelHideImaginePromo' },
+      { key: 'hideUsageLimit', labelKey: 'quickSettingsLabelHideUsageLimit' },
+    ];
+    
+    panel.innerHTML = `
+        <div class="qs-section-title">${getMessage('quickSettingsSectionVisibility')}</div>
+        ${toggleConfig.map(item => `
+            <div class="qs-row">
+                <label for="qs-${item.key}">${getMessage(item.labelKey)}</label>
+                <label class="switch"><input type="checkbox" id="qs-${item.key}"><span class="track"><span class="thumb"></span></span></label>
+            </div>`).join('')}
+        <div class="qs-row">
+            <label>${getMessage('quickSettingsLabelGlassStyle')}</label>
+            <div class="qs-pill-group" role="group">
+                <button type="button" class="qs-pill" data-appearance="clear">${getMessage('appearanceOptionClear')}</button>
+                <button type="button" class="qs-pill" data-appearance="dimmed">${getMessage('appearanceOptionDimmed')}</button>
+            </div>
+        </div>`;
+    
+    toggleConfig.forEach(({ key }) => {
+      const el = document.getElementById(`qs-${key}`);
+      if (el) {
+        el.checked = !!settings[key];
+        el.addEventListener('change', () => chrome.storage.sync.set({ [key]: el.checked }));
+      }
+    });
+
+    const appearanceButtons = panel.querySelectorAll('[data-appearance]');
+    appearanceButtons.forEach(button => {
+        const isActive = (settings.appearance || 'dimmed') === button.dataset.appearance;
+        button.classList.toggle('active', isActive);
+        button.addEventListener('click', () => {
+            chrome.storage.sync.set({ appearance: button.dataset.appearance });
+        });
+    });
   }
 
-  function applyRootFlags(show) {
+  function applyRootFlags() {
     const root = document.documentElement;
+    const show = shouldShow();
     root.classList.toggle(HTML_CLASS, show);
     root.classList.toggle(LEGACY_CLASS, !!settings.legacyComposer);
     root.classList.toggle(ANIMATIONS_DISABLED_CLASS, !!settings.disableAnimations);
     root.classList.toggle(FOCUS_CLASS, !!settings.focusMode);
     root.classList.toggle('grok-hide-left-nav', !!settings.hideLeftNav || !!settings.focusMode);
-    const isClear = (settings.appearance || DEFAULTS.appearance) === 'clear';
-    root.classList.toggle(APPEARANCE_CLEAR_CLASS, isClear);
-    root.classList.toggle(APPEARANCE_DIMMED_CLASS, !isClear);
-
-    let forceLight = false;
-    if (settings.theme === 'light') {
-      forceLight = true;
-    } else if (settings.theme === 'dark') {
-      forceLight = false;
-    } else {
-      const classList = root.classList;
-      const siteLight = classList.contains('light') || classList.contains('theme-light') || root.getAttribute('data-theme') === 'light';
-      forceLight = siteLight;
-    }
-    root.classList.toggle(LIGHT_CLASS, forceLight);
+    root.classList.toggle(APPEARANCE_CLEAR_CLASS, settings.appearance === 'clear');
+    
+    const isLight = settings.theme === 'light' || (settings.theme === 'auto' && (root.classList.contains('light') || root.getAttribute('data-theme') === 'light'));
+    root.classList.toggle(LIGHT_CLASS, isLight);
   }
 
   function showBg() {
-    if (!document.getElementById(ID)) {
-      const node = makeBgNode();
-      const attach = () => {
+    let node = document.getElementById(ID);
+    if (!node) {
+      node = makeBgNode();
+      const add = () => {
         document.body.prepend(node);
         ensureAppOnTop();
-        applyCustomStyles();
-        updateBackgroundImage();
       };
-      if (document.body) {
-        attach();
-      } else {
-        document.addEventListener('DOMContentLoaded', attach, { once: true });
-      }
-    } else {
-      applyCustomStyles();
-      updateBackgroundImage();
+      if (document.body) add();
+      else document.addEventListener('DOMContentLoaded', add, { once: true });
     }
   }
 
@@ -448,118 +336,81 @@
   }
 
   function applyAllSettings() {
-    const show = shouldShow();
-    if (show) {
+    if (shouldShow()) {
       showBg();
     } else {
       hideBg();
     }
-
-    manageQuickSettingsUI(show);
-    applyRootFlags(show);
+    applyRootFlags();
     applyCustomStyles();
     updateBackgroundImage();
+    manageQuickSettingsUI();
     manageUsageLimitNotices();
     manageUpgradePromos();
     manageImaginePromo();
   }
-
+  
   function startObservers() {
     if (observersStarted) return;
-    if (!document.body) {
-      if (!observersInitScheduled) {
-        observersInitScheduled = true;
-        document.addEventListener('DOMContentLoaded', () => {
-          observersInitScheduled = false;
-          startObservers();
-        }, { once: true });
-      }
-      return;
-    }
     observersStarted = true;
 
-    const uiReadyObserver = new MutationObserver((mutations, obs) => {
-      const stableUiElement = document.querySelector('.query-bar');
-
-      if (stableUiElement) {
+    new MutationObserver((_, obs) => {
+      if (document.querySelector('main')) {
         applyAllSettings();
         obs.disconnect();
       }
-    });
-
-    uiReadyObserver.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+    }).observe(document.documentElement, { childList: true, subtree: true });
 
     window.addEventListener('focus', applyAllSettings, { passive: true });
-
+    
     let lastUrl = location.href;
     const checkUrl = () => {
       if (location.href === lastUrl) return;
       lastUrl = location.href;
       applyAllSettings();
     };
-
     window.addEventListener('popstate', checkUrl, { passive: true });
-
     const originalPushState = history.pushState;
-    history.pushState = function pushState(...args) {
-      originalPushState.apply(this, args);
-      setTimeout(checkUrl, 0);
-    };
-
-    const originalReplaceState = history.replaceState;
-    history.replaceState = function replaceState(...args) {
-      originalReplaceState.apply(this, args);
-      setTimeout(checkUrl, 0);
-    };
-
+    history.pushState = function(...args) { originalPushState.apply(this, args); setTimeout(checkUrl, 0); };
+    
     const domObserver = new MutationObserver(() => {
       manageUsageLimitNotices();
       manageUpgradePromos();
       manageImaginePromo();
     });
-    domObserver.observe(document.body, { childList: true, subtree: true });
+    if (document.body) domObserver.observe(document.body, { childList: true, subtree: true });
+    else document.addEventListener('DOMContentLoaded', () => domObserver.observe(document.body, { childList: true, subtree: true }));
 
-    const themeObserver = new MutationObserver(() => {
-      if (settings.theme === 'auto') {
-        applyRootFlags(shouldShow());
-      }
-    });
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] });
+    new MutationObserver(() => {
+      if (settings.theme === 'auto') applyRootFlags();
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] });
   }
 
-  if (chrome?.storage?.sync) {
-    chrome.storage.sync.get(DEFAULTS, (res) => {
-      if (chrome.runtime?.lastError) {
-        settings = { ...DEFAULTS };
-      } else {
-        settings = { ...DEFAULTS, ...res };
+  const refreshSettingsAndApply = () => {
+    chrome.runtime.sendMessage({ type: 'GET_SETTINGS' }, (freshSettings) => {
+      if (chrome.runtime.lastError) {
+        console.error("Aurora/Grok Error: Could not get settings.", chrome.runtime.lastError.message);
+        return;
       }
+      settings = freshSettings;
       applyAllSettings();
-      startObservers();
     });
+  };
 
+  if (chrome?.runtime?.sendMessage) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        refreshSettingsAndApply();
+        startObservers();
+      }, { once: true });
+    } else {
+      refreshSettingsAndApply();
+      startObservers();
+    }
     chrome.storage.onChanged.addListener((changes, area) => {
-      if (area === 'sync') {
-        let needsApply = false;
-        Object.keys(changes).forEach((key) => {
-          if (key in settings) {
-            settings[key] = changes[key].newValue;
-            needsApply = true;
-          }
-        });
-        if (needsApply) {
-          applyAllSettings();
-          renderQuickSettingsState();
-        }
-      } else if (area === 'local' && changes[LOCAL_BG_KEY]) {
-        updateBackgroundImage();
+      if (area === 'sync' || (area === 'local' && changes[LOCAL_BG_KEY])) {
+        refreshSettingsAndApply();
       }
     });
-  } else {
-    applyAllSettings();
-    startObservers();
   }
 })();

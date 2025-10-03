@@ -454,35 +454,30 @@ html.grok-light-mode #grok-qs-panel .track {
 
 html.grok-ambient-on:not(.grok-legacy-composer) .query-bar {
 
-  position: relative;
+  position: relative; /* Crucial for positioning child elements */
+  display: flex; /* Use flexbox for proper alignment */
+  flex-direction: column;
   background: linear-gradient(135deg, rgba(28, 36, 58, 0.18), rgba(14, 20, 36, 0.12)) !important;
   border: none !important;
   -webkit-backdrop-filter: blur(22px) saturate(150%);
   backdrop-filter: blur(22px) saturate(150%);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14), 0 8px 24px rgba(8, 14, 26, 0.16);
   transition: box-shadow 160ms ease, border-color 160ms ease, background-color 160ms ease;
-}
-
-html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar {
-
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(240, 244, 255, 0.64)) !important;
-
-  border-color: rgba(16, 24, 44, 0.14) !important;
-
-  box-shadow: 0 0 0 1px rgba(16, 24, 44, 0.14), 0 12px 28px rgba(52, 62, 92, 0.16);
-
-}
-
-html.grok-ambient-on:not(.grok-legacy-composer) .query-bar {
-  padding-bottom: 0 !important;
-}
-
-html.grok-ambient-on:not(.grok-legacy-composer) body:has(a[aria-label='Switch to Default Chat']) .query-bar {
-  padding-bottom: 3rem !important;
+  padding-bottom: 3rem !important; /* Restore padding for the buttons by default */
 }
 
 html.grok-ambient-on:not(.grok-legacy-composer) .query-bar > .flex.absolute {
+  position: absolute !important;
   bottom: max(0px, env(safe-area-inset-bottom, 0px)) !important;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) .query-bar {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(240, 244, 255, 0.64)) !important;
+  border-color: rgba(16, 24, 44, 0.14) !important;
+  box-shadow: 0 0 0 1px rgba(16, 24, 44, 0.14), 0 12px 28px rgba(52, 62, 92, 0.16);
 }
 
 html.grok-ambient-on:not(.grok-legacy-composer) .query-bar::before {
@@ -1229,3 +1224,133 @@ html.grok-light-mode #grok-qs-panel {
 
 html.grok-light-mode #grok-qs-panel .qs-row:hover { background: rgba(0, 0, 0, 0.05); }
 html.grok-light-mode #grok-qs-panel .track { background: rgba(0, 0, 0, 0.1); }
+/* --- NEW: Animated Gradient Background --- */
+@keyframes move-blob-1 {
+  0%   { transform: scale(1)   translate(0px, 0px); }
+  33%  { transform: scale(1.1) translate(30vw, -15vh); }
+  66%  { transform: scale(0.9) translate(-20vw, 20vh); }
+  100% { transform: scale(1)   translate(0px, 0px); }
+}
+@keyframes move-blob-2 {
+  0%   { transform: scale(1)    translate(0px, 0px); }
+  33%  { transform: scale(1.2)  translate(-25vw, 10vh); }
+  66%  { transform: scale(0.8)  translate(15vw, -20vh); }
+  100% { transform: scale(1)    translate(0px, 0px); }
+}
+@keyframes move-blob-3 {
+  0%   { transform: scale(1)    translate(0px, 0px); }
+  33%  { transform: scale(1.15) translate(20vw, 20vh); }
+  66%  { transform: scale(0.85) translate(-30vw, -10vh); }
+  100% { transform: scale(1)    translate(0px, 0px); }
+}
+
+#grok-ambient-bg .animated-bg {
+  display: none;
+  z-index: 0;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+#grok-ambient-bg .media-layer.gpt5-active .animated-bg { display: block; }
+#grok-ambient-bg .media-layer.gpt5-active video,
+#grok-ambient-bg .media-layer.gpt5-active picture { display: none; }
+
+.animated-bg .blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.45;
+  filter: blur(100px);
+  will-change: transform;
+}
+.animated-bg .blob:nth-child(1) {
+  width: 60vmax; height: 60vmax;
+  top: -30vmax; left: -20vmax;
+  background: #ff99c8;
+  animation: move-blob-1 45s infinite alternate ease-in-out;
+}
+.animated-bg .blob:nth-child(2) {
+  width: 70vmax; height: 70vmax;
+  bottom: -40vmax; right: -30vmax;
+  background: #a9d6ff;
+  animation: move-blob-2 60s infinite alternate ease-in-out;
+}
+.animated-bg .blob:nth-child(3) {
+  width: 50vmax; height: 50vmax;
+  bottom: -20vmax; left: 10vmax;
+  background: #fcf6bd;
+  animation: move-blob-3 75s infinite alternate ease-in-out;
+}
+
+html.grok-light-mode .animated-bg .blob {
+  opacity: 0.6 !important;
+}
+html.grok-light-mode .animated-bg .blob:nth-child(1) { background: #ff78b4; }
+html.grok-light-mode .animated-bg .blob:nth-child(2) { background: #77b5fe; }
+html.grok-light-mode .animated-bg .blob:nth-child(3) { background: #fdd26e; }
+/* --- Menu Animations --- */
+@keyframes aurora-menu-open {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes aurora-menu-close {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.95); }
+}
+
+html.grok-ambient-on:not(.grok-animations-disabled) [data-radix-popper-content-wrapper][style*="transform"]:not([style*="transform: none"]) {
+  animation: aurora-menu-open 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --- Clear 'Liquid Glass' Appearance Overrides --- */
+html.grok-appearance-clear:not(.grok-legacy-composer) :is(
+  .query-bar,
+  [data-radix-popper-content-wrapper] [data-radix-menu-content],
+  #grok-qs-panel,
+  [role="dialog"][class*="bg-background"],
+  .sticky.top-0
+) {
+  --clear-blur: 24px;
+  --clear-saturate: 180%;
+  --clear-shadow: 0 16px 50px rgba(0,0,0,0.4);
+  --clear-bg: rgba(255, 255, 255, 0.08);
+  --clear-border: rgba(255,255,255,0.2);
+  --clear-glow: rgba(255,255,255,0.08);
+  
+  background: var(--clear-bg) !important;
+  border-color: var(--clear-border) !important;
+  box-shadow: inset 0 0 2px 0 var(--clear-glow), var(--clear-shadow) !important;
+  -webkit-backdrop-filter: blur(var(--clear-blur)) saturate(var(--clear-saturate)) !important;
+  backdrop-filter: blur(var(--clear-blur)) saturate(var(--clear-saturate)) !important;
+  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, backdrop-filter 0.4s ease, -webkit-backdrop-filter 0.4s ease;
+}
+
+/* Light Mode Overrides for Clear/Liquid Style */
+html.grok-appearance-clear.grok-light-mode:not(.grok-legacy-composer) :is(
+  .query-bar,
+  [data-radix-popper-content-wrapper] [data-radix-menu-content],
+  #grok-qs-panel,
+  [role="dialog"][class*="bg-background"],
+  .sticky.top-0
+) {
+  --clear-shadow-light: 0 16px 40px rgba(0,0,0,0.18);
+  --clear-bg-light: rgba(255,255,255,0.2);
+  --clear-border-light: rgba(0,0,0,0.15);
+  --clear-glow-light: rgba(255,255,255,0.25);
+
+  background: var(--clear-bg-light) !important;
+  border-color: var(--clear-border-light) !important;
+  box-shadow: inset 0 0 2px 0 var(--clear-glow-light), var(--clear-shadow-light) !important;
+}
+
+/* Background Media Adjustments for Clear Style */
+html.grok-appearance-clear:not(.grok-light-mode) #grok-ambient-bg img,
+html.grok-appearance-clear:not(.grok-light-mode) #grok-ambient-bg video {
+  filter: blur(var(--grok-bg-blur-radius, 60px)) brightness(0.85) saturate(1.04);
+}
+
+html.grok-appearance-clear.grok-light-mode #grok-ambient-bg img,
+html.grok-appearance-clear.grok-light-mode #grok-ambient-bg video {
+  filter: blur(var(--grok-bg-blur-radius, 60px)) brightness(1) saturate(1.02);
+}

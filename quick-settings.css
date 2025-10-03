@@ -1,0 +1,148 @@
+/* Aurora for Grok - Quick Settings UI Styles */
+
+#grok-qs-btn {
+  position: fixed;
+  bottom: 16px;
+  right: 18px;
+  z-index: 99998;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(30, 30, 30, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+#grok-qs-btn:hover { transform: scale(1.08); }
+#grok-qs-btn svg { width: 20px; height: 20px; color: white; opacity: 0.9; }
+
+html.grok-light-mode #grok-qs-btn {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(0,0,0,0.1);
+}
+html.grok-light-mode #grok-qs-btn svg { color: #000; }
+
+@keyframes qs-panel-open {
+  from { opacity: 0; transform: translateY(8px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes qs-panel-close {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(8px) scale(0.95); }
+}
+
+#grok-qs-panel {
+  position: fixed;
+  bottom: 64px;
+  right: 18px;
+  z-index: 99997;
+  width: 260px;
+  background: rgba(44, 44, 51, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  backdrop-filter: blur(40px) saturate(180%);
+  border-radius: 14px;
+  box-shadow: inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.07), 0 16px 40px rgba(0,0,0,0.35);
+  padding: 8px;
+  transform-origin: bottom right;
+  color: #fff;
+}
+
+html.grok-light-mode #grok-qs-panel {
+    background: rgba(242, 242, 247, 0.8);
+    border-color: rgba(0,0,0,0.1);
+    box-shadow: inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.7), 0 16px 40px rgba(0,0,0,0.15);
+    color: #000;
+}
+
+#grok-qs-panel[data-state="closed"] {
+  opacity: 0;
+  transform: translateY(8px) scale(0.95);
+  pointer-events: none;
+  visibility: hidden;
+}
+
+#grok-qs-panel[data-state="open"] {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  visibility: visible;
+  animation: qs-panel-open 250ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#grok-qs-panel[data-state="closing"] {
+  pointer-events: none;
+  visibility: visible;
+  animation: qs-panel-close 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.qs-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  opacity: 0.6;
+  padding: 8px 8px 4px;
+}
+.qs-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+.qs-row:hover { background: rgba(255, 255, 255, 0.08); }
+html.grok-light-mode .qs-row:hover { background: rgba(0,0,0,0.06); }
+.qs-row > label { font-size: 13px; opacity: 0.95; }
+
+.qs-row .switch { position: relative; width: 42px; height: 24px; flex: 0 0 auto; }
+.qs-row .switch input { display: none; }
+.qs-row .track { position: absolute; inset: 0; border-radius: 999px; background: rgba(0,0,0,0.3); transition: background .2s ease; }
+html.grok-light-mode .qs-row .track { background: rgba(0,0,0,0.2); }
+.qs-row input:checked + .track { background: #4f8cff; }
+.qs-row .thumb { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: white; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .2s ease; }
+.qs-row input:checked + .track .thumb { transform: translateX(18px); }
+
+.qs-pill-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.07);
+}
+html.grok-light-mode .qs-pill-group {
+  border-color: rgba(0,0,0,0.12);
+  background: rgba(0,0,0,0.05);
+}
+.qs-pill {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.qs-pill:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+html.grok-light-mode .qs-pill:hover {
+  background: rgba(0,0,0,0.08);
+}
+.qs-pill.active {
+  background: rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+}
+html.grok-light-mode .qs-pill.active {
+  background: rgba(0,0,0,0.12);
+}

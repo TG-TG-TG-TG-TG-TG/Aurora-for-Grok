@@ -1,4 +1,22 @@
-﻿html.grok-ambient-on:not(.grok-legacy-composer) nav[role="navigation"],
+/* Add these new rules to the top or bottom of the file */
+
+/* FIX: Make the main sidebar wrapper transparent */
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-surface-base {
+  background: transparent !important;
+}
+
+/* FIX: Make the inner content container transparent */
+/* This is the key selector you identified */
+html.grok-ambient-on:not(.grok-legacy-composer) .bg-sidebar {
+  background: transparent !important;
+}
+
+/* FIX: Ensure direct child elements don't re-introduce a background */
+html.grok-ambient-on:not(.grok-legacy-composer) div[data-sidebar="sidebar"] > div {
+    background-color: transparent !important;
+}
+
+html.grok-ambient-on:not(.grok-legacy-composer) nav[role="navigation"],
 html.grok-ambient-on:not(.grok-legacy-composer) aside[data-testid*="sidebar"],
 html.grok-ambient-on:not(.grok-legacy-composer) aside[aria-label*="Navigation"] {
   position: relative;
@@ -8,7 +26,7 @@ html.grok-ambient-on:not(.grok-legacy-composer) aside[aria-label*="Navigation"] 
 }
 
 html.grok-ambient-on:not(.grok-legacy-composer) nav[role="navigation"]::before,
-html.grok-ambient-on:not(.grok-legacy-composer) aside[data-testid*="sidebar"]::before,
+html.grok-ambient-on:not(.grok-ambient-on):not(.grok-legacy-composer) aside[data-testid*="sidebar"]::before,
 html.grok-ambient-on:not(.grok-legacy-composer) aside[aria-label*="Navigation"]::before {
   content: '';
   position: absolute;
@@ -106,4 +124,28 @@ html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) :is(nav[role="na
 
 html.grok-light-mode.grok-ambient-on:not(.grok-legacy-composer) :is(nav[role="navigation"], aside) input[type="text"]::placeholder {
     color: rgba(0, 0, 0, 0.5) !important;
+}
+
+
+/* --- Clear 'Liquid Glass' Appearance for Sidebar --- */
+html.grok-appearance-clear.grok-ambient-on:not(.grok-legacy-composer) :is(nav[role="navigation"], aside[data-testid*="sidebar"], .bg-sidebar)::before {
+  --sidebar-glass-radius: 18px;
+  --sidebar-glass-blur: 28px;
+  --sidebar-glass-sat: 180%;
+  --sidebar-glass-bg: rgba(18, 18, 18, 0.15);
+  --sidebar-glass-stroke: rgba(255, 255, 255, 0.2);
+  --sidebar-glass-shadow: 0 16px 70px rgba(0, 0, 0, 0.55);
+  
+  background: var(--sidebar-glass-bg) !important;
+  border-color: var(--sidebar-glass-stroke) !important;
+  box-shadow: inset 0 0 2px 0 rgba(255,255,255,0.08), var(--sidebar-glass-shadow) !important;
+  transition: background 0.4s ease, backdrop-filter 0.4s ease, -webkit-backdrop-filter 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Light mode overrides for clear/liquid sidebar */
+html.grok-appearance-clear.grok-ambient-on.grok-light-mode:not(.grok-legacy-composer) :is(nav[role="navigation"], aside[data-testid*="sidebar"], .bg-sidebar)::before {
+  --sidebar-glass-bg: rgba(255, 255, 255, 0.3);
+  --sidebar-glass-stroke: rgba(0, 0, 0, 0.15);
+  --sidebar-glass-shadow: 0 16px 60px rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 0 2px 0 rgba(255,255,255,0.25), var(--sidebar-glass-shadow) !important;
 }
